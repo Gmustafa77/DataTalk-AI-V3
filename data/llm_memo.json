@@ -1,0 +1,5210 @@
+{
+ "version": 1,
+ "updated_at": "2026-11-12T11:36:34+00:00",
+ "entries": {
+  "8746e130c1be4077d2f45036b570b0b6e3512a17b1adf84e65240e1db8452673": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T16:35:53+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Show me the top 10 providers by appeal count.",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Provider_Name"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "3482ea627b2bea67751e93bac877cf49afe6392c306e3f253120f1146fd78462": {
+   "purpose": "sql_generation",
+   "created_at": "2026-10-28T16:35:54+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Provider_Name`, COUNT(`Case Identifier`) AS `Total Appeals` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Provider_Name` ORDER BY `Total Appeals` DESC, `Provider_Name` ASC LIMIT 10",
+    "intent": "Returns the top 10 providers ranked by total appeal count.",
+    "referenced_columns": [
+     "Provider_Name"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Provider_Name"
+    ],
+    "measures": [
+     {
+      "column": "Total Appeals",
+      "type": "count",
+      "numerator": "Total Appeals",
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "one row per provider",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "3093498a39b1843bdf926123089c354870646901d7ec9874dced9d72fc8205e1": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T16:38:43+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which operational unit has the best TAT performance?",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Current Unit Name"
+      ],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "1e22d0b0ac92cff76106a3d39f1c0a134b5d91983caadfe0fd7f1cbde3a2b967": {
+   "purpose": "sql_generation",
+   "created_at": "2026-10-28T16:38:45+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Current Unit Name`, AVG(CASE WHEN `Case Status` = 'CLOSED' THEN datediff(`Closed Date (CaseHistory)`, `Received Date`) END) AS `Avg Turnaround Days` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Current Unit Name` ORDER BY `Avg Turnaround Days` ASC, `Current Unit Name` ASC LIMIT 10",
+    "intent": "Returns the top 10 operational units ranked by lowest average turnaround days for closed appeals.",
+    "referenced_columns": [
+     "Current Unit Name",
+     "Case Status",
+     "Closed Date (CaseHistory)",
+     "Received Date"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Current Unit Name"
+    ],
+    "measures": [
+     {
+      "column": "Avg Turnaround Days",
+      "type": "numeric",
+      "numerator": "Avg Turnaround Days",
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "one row per unit",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "612db4928c3404b67274734c2bfe8d98f69d21f615f95e55e597ccf62cc8e1f3": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T16:39:28+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which plan sponsor has high appeal volume but also a high overturn rate?",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Plan Sponsor Name"
+      ],
+      "metrics": [
+       "total_appeals",
+       "overturn_rate"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "101ed91ce759f0847123184b1e664dc9ee2d7c7520a6646ce222e488fc39c044": {
+   "purpose": "sql_generation",
+   "created_at": "2026-10-28T16:40:02+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Plan Sponsor Name`, COUNT(`Case Identifier`) AS `Total Appeals`, SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END) AS `Closed Cases`, SUM(CASE WHEN `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) AS `Overturned Cases`, ROUND(CAST(SUM(CASE WHEN `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) AS DOUBLE) / NULLIF(SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END),0) * 100, 2) AS `Overturn Rate` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Plan Sponsor Name` ORDER BY `Total Appeals` DESC, `Overturn Rate` DESC, `Plan Sponsor Name` ASC LIMIT 10",
+    "intent": "Returns the top plan sponsors ranked by total appeal volume and overturn rate, showing total appeals, closed cases, overturned cases, and the overturn rate percentage.",
+    "referenced_columns": [
+     "Plan Sponsor Name",
+     "Case Identifier",
+     "Case Status",
+     "Determination"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Plan Sponsor Name"
+    ],
+    "measures": [
+     {
+      "column": "Total Appeals",
+      "type": "count",
+      "numerator": "Appeals",
+      "denominator": "Appeals"
+     },
+     {
+      "column": "Overturn Rate",
+      "type": "percentage",
+      "numerator": "Overturned Cases",
+      "denominator": "Closed Cases"
+     }
+    ],
+    "expected_row_scale": "one row per plan sponsor",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "4b94502ff9f076b147d3946a7ba36ebdff25e036289a6eda27bf135e7ed5cdd3": {
+   "purpose": "insight_narrative",
+   "created_at": "2026-10-28T16:40:29+00:00",
+   "value": {
+    "key_finding": "COSTCO WHOLESALE CORPORATION has the highest Total Appeals at 1,066, 62 (6.2%) above the median sponsor (1,004), but overturn rate data is not available [F11, F6, F7, F4, F1]",
+    "detailed_analysis": [
+     "Total Appeals range from 956 (DELTA AIR LINES, INC.) to 1,066 (COSTCO WHOLESALE CORPORATION), a spread of 110 [F10, F11, F8]",
+     "The coefficient of variation is 3.0%, indicating low dispersion across sponsors [F14]",
+     "COSTCO WHOLESALE CORPORATION falls outside the interquartile range fences (946 to 1,050), marking it as an outlier [F15, F16, F11]",
+     "Closed cases correlate strongly with Total Appeals (Spearman ρ = 0.88) [F21]",
+     "The top three sponsors account for 31.0% of all appeals, with a concentration HHI of 1,001 [F24, F25]"
+    ],
+    "business_impact": [
+     "With 10.5% of closed cases, COSTCO WHOLESALE CORPORATION contributes significantly to overall workload [F18, F19]",
+     "High appeal volume may strain capacity and affect SLA exposure if not managed [F11, F21]",
+     "The strong correlation between closed cases and appeals suggests that increased appeals could lead to higher case resolution times [F21, F18]"
+    ],
+    "recommended_actions": [
+     {
+      "priority": "Immediate",
+      "action": "Conduct a detailed overturn rate audit for sponsors with Total Appeals >1,000",
+      "owner": "Compliance Team",
+      "timeframe": "within 30 days",
+      "success_measure": "Obtain overturn rate data for COSTCO WHOLESALE CORPORATION and DELTA AIR LINES, INC.",
+      "evidence_ids": [
+       "F11",
+       "F3",
+       "F6",
+       "F7"
+      ]
+     },
+     {
+      "priority": "Short-term",
+      "action": "Benchmark closed case volumes against appeal volumes for top sponsors to identify capacity gaps",
+      "owner": "Operations Analytics",
+      "timeframe": "next 60 days",
+      "success_measure": "Identify sponsors where closed cases exceed 90% of appeal volume",
+      "evidence_ids": [
+       "F18",
+       "F19",
+       "F21",
+       "F11",
+       "F10"
+      ]
+     },
+     {
+      "priority": "Strategic",
+      "action": "Implement a monitoring dashboard that flags sponsors whose appeal volume deviates >10% from median",
+      "owner": "Data Engineering",
+      "timeframe": "roll out in 90 days",
+      "success_measure": "Reduce outlier frequency to <5% of sponsors",
+      "evidence_ids": [
+       "F6",
+       "F7",
+       "F4",
+       "F8"
+      ]
+     }
+    ]
+   }
+  },
+  "eafe606f6e6defa7edf6bba303ec71da69518aa1192b2871371d08277bef3c4c": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T16:42:12+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which plan sponsors have the lowest compliance rate?",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Plan Sponsor Name"
+      ],
+      "metrics": [
+       "compliance_rate"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "bab9ddec9f170b068e36c4d4042cf6bc1c3d2cd3e58dc7935a99a3e4888c02ee": {
+   "purpose": "sql_generation",
+   "created_at": "2026-10-28T16:42:17+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Plan Sponsor Name` AS `Plan Sponsor Name`, CASE WHEN SUM(CASE WHEN `Case Status`='CLOSED' THEN 1 ELSE 0 END)>0 THEN ROUND(100.0 * SUM(CASE WHEN `Case Status`='CLOSED' AND upper(`Closed In Compliance Indicator`)='Y' THEN 1 ELSE 0 END) / SUM(CASE WHEN `Case Status`='CLOSED' THEN 1 ELSE 0 END),2) ELSE NULL END AS `Compliance Rate`, SUM(CASE WHEN `Case Status`='CLOSED' THEN 1 ELSE 0 END) AS `Closed Cases`, SUM(CASE WHEN `Case Status`='CLOSED' AND upper(`Closed In Compliance Indicator`)='Y' THEN 1 ELSE 0 END) AS `Compliant Cases` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Plan Sponsor Name` ORDER BY `Compliance Rate` ASC, `Plan Sponsor Name` ASC LIMIT 10",
+    "intent": "Returns the plan sponsors ranked by lowest compliance rate, including the rate, closed cases, and compliant cases",
+    "referenced_columns": [
+     "Case Status",
+     "Closed In Compliance Indicator",
+     "Plan Sponsor Name"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Plan Sponsor Name"
+    ],
+    "measures": [
+     {
+      "column": "Compliance Rate",
+      "type": "percentage",
+      "numerator": "Compliant Cases",
+      "denominator": "Closed Cases"
+     }
+    ],
+    "expected_row_scale": "one row per sponsor",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "8e3b361512064c44d43a8476793683f21370114467970b9d0494cad81795a367": {
+   "purpose": "insight_narrative",
+   "created_at": "2026-10-28T16:42:44+00:00",
+   "value": {
+    "key_finding": "DELTA AIR LINES, INC. has the lowest compliance rate, with 470 compliant cases, 9.9% of the total compliant cases, the lowest among the 10 combinations [F18,F19,F1]",
+    "detailed_analysis": [
+     "Compliance cases range from 470 for DELTA AIR LINES, INC. to 504 for COSTCO WHOLESALE CORPORATION, a spread of 34 cases [F18,F20]",
+     "The runner‑up margin of 34 cases indicates a modest gap between the lowest and second‑lowest performers [F18,F20]",
+     "With 470 compliant cases out of 4,759 total compliant cases, DELTA AIR LINES accounts for only 9.9% of all compliant work [F18,F19,F17]",
+     "The overall distribution of compliant cases is tight, as the coefficient of variation for closed cases is only 3.8%, suggesting similar variability across sponsors [F14]",
+     "No sponsor falls outside the interquartile fences for closed cases, so the ranking reflects a gradual spread rather than an extreme outlier [F15,F16]"
+    ],
+    "business_impact": [
+     "A lower compliance rate for DELTA AIR LINES, INC. may increase the risk of regulatory penalties and affect member experience [F18,F19]",
+     "The 9.9% share of compliant cases indicates that a significant portion of the compliance workload is concentrated in a few sponsors, potentially straining resources [F19]"
+    ],
+    "recommended_actions": [
+     {
+      "priority": "Immediate",
+      "action": "Conduct a root‑cause analysis of compliance failures for DELTA AIR LINES, INC.",
+      "owner": "Compliance Lead",
+      "timeframe": "30 days",
+      "success_measure": "Identify at least three actionable gaps and implement corrective actions to raise compliant cases to 500 [F18]",
+      "evidence_ids": [
+       "F18"
+      ]
+     },
+     {
+      "priority": "Short-term",
+      "action": "Allocate additional compliance training resources to DELTA AIR LINES, INC.",
+      "owner": "HR Manager",
+      "timeframe": "60 days",
+      "success_measure": "Increase the share of compliant cases to at least 12% of total compliant cases [F19]",
+      "evidence_ids": [
+       "F19"
+      ]
+     },
+     {
+      "priority": "Strategic",
+      "action": "Implement automated compliance monitoring for all plan sponsors",
+      "owner": "IT Lead",
+      "timeframe": "120 days",
+      "success_measure": "Reduce the compliance rate gap between the lowest and median sponsor to less than 5% [F18,F1]",
+      "evidence_ids": [
+       "F18",
+       "F1"
+      ]
+     },
+     {
+      "priority": "Monitor",
+      "action": "Track compliance rate trends quarterly for all sponsors",
+      "owner": "Operations Manager",
+      "timeframe": "Quarterly",
+      "success_measure": "Maintain compliance rates within 10% of the median across all sponsors [F1]",
+      "evidence_ids": [
+       "F1"
+      ]
+     }
+    ]
+   }
+  },
+  "ecd6e6358efb38ff48c11fa6c3e8e27002175381f8875d1a7f59190d3fab7992": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T16:44:05+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 2,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which sponsor has the highest number of appeals",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Plan Sponsor Name"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     },
+     {
+      "id": "q2",
+      "question_text": "how are those appeals being determined?",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "breakdown",
+      "grain": "none",
+      "dimensions": [
+       "Determination"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": "q1",
+      "dependency_note": "Use sponsor from q1",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "cb32745f2a44106d71a11e24afa32a6f2703fdc327d3b64d3a41fb8cf8857fdc": {
+   "purpose": "sql_generation",
+   "created_at": "2026-10-28T16:44:18+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Plan Sponsor Name`, COUNT(`Case Identifier`) AS `Total Appeals` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Plan Sponsor Name` ORDER BY `Total Appeals` DESC LIMIT 1",
+    "intent": "returns the sponsor with the highest number of appeals",
+    "referenced_columns": [
+     "Plan Sponsor Name",
+     "Case Identifier"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Plan Sponsor Name"
+    ],
+    "measures": [
+     {
+      "column": "Total Appeals",
+      "type": "count",
+      "numerator": "Total Appeals",
+      "denominator": "Total Appeals"
+     }
+    ],
+    "expected_row_scale": "one row",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "8a994eac2e1254302671a6f4c2052ecc040555623c24e6c86aa7b161e9046c73": {
+   "purpose": "insight_narrative",
+   "created_at": "2026-10-28T16:44:23+00:00",
+   "value": {
+    "key_finding": "Total Appeals is 1,066, but sponsor-level data is not available [F1]",
+    "detailed_analysis": [
+     "The metric is a single aggregate; no range or dispersion is shown [F1]"
+    ],
+    "business_impact": [
+     "Without sponsor-level detail, operational decisions cannot be targeted [F1]"
+    ],
+    "recommended_actions": [
+     {
+      "priority": "Immediate",
+      "action": "Request sponsor-level appeal data",
+      "owner": "Data Analytics Team",
+      "timeframe": "within 2 weeks",
+      "success_measure": "Availability of sponsor-level appeal counts",
+      "evidence_ids": [
+       "F1"
+      ]
+     },
+     {
+      "priority": "Short-term",
+      "action": "Segment appeals by sponsor to identify high-volume sponsors",
+      "owner": "Operations Lead",
+      "timeframe": "within 1 month",
+      "success_measure": "Identification of top 3 sponsors by appeal count",
+      "evidence_ids": [
+       "F1"
+      ]
+     },
+     {
+      "priority": "Strategic",
+      "action": "Implement sponsor-level monitoring dashboard",
+      "owner": "Product Manager",
+      "timeframe": "within 6 months",
+      "success_measure": "Dashboard deployed with real-time sponsor appeal metrics",
+      "evidence_ids": [
+       "F1"
+      ]
+     }
+    ]
+   }
+  },
+  "16ec395793d9aacd483b23c4ed52521bb212e921e3711527866fcfc11c0dfc2f": {
+   "purpose": "sql_generation",
+   "created_at": "2026-10-28T16:44:54+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Determination`, COUNT(`Case Identifier`) AS `Total Appeals` FROM `my_catalog`.`default`.`appeals_final` WHERE `Plan Sponsor Name` = 'COSTCO WHOLESALE CORPORATION' GROUP BY `Determination` ORDER BY `Determination` ASC",
+    "intent": "returns the number of appeals per determination for the specified sponsor",
+    "referenced_columns": [
+     "Determination",
+     "Plan Sponsor Name"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Determination"
+    ],
+    "measures": [
+     {
+      "column": "Total Appeals",
+      "type": "count",
+      "numerator": "Total Appeals",
+      "denominator": "Total Cases"
+     }
+    ],
+    "expected_row_scale": "one row per determination",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "e09724b1e5c27582c8ac89574831f58348abea55099b51ea93f248ecc55d2fcb": {
+   "purpose": "synthesis",
+   "created_at": "2026-10-28T16:45:34+00:00",
+   "value": {
+    "headline": "The sponsor with the highest number of appeals cannot be identified due to lack of sponsor-level data, but the appeals are primarily determined as UPHELD, which accounts for 439 appeals—about 84.8% above the median determination.",
+    "answers": [
+     {
+      "id": "q1",
+      "question_text": "Which sponsor has the highest number of appeals",
+      "status": "ANSWERED",
+      "answer": "Sponsor-level data is not available, so the sponsor with the highest number of appeals cannot be identified.",
+      "why_not": ""
+     },
+     {
+      "id": "q2",
+      "question_text": "how are those appeals being determined?",
+      "status": "ANSWERED",
+      "answer": "The highest number of appeals (439) are for the UPHELD determination, which is 201.5 (84.8%) above the median determination of 237.5.",
+      "why_not": ""
+     }
+    ],
+    "cross_cutting_note": ""
+   }
+  },
+  "ba9dfbc2d6ac399efddf34b3f27c79cf8b0a462d33ff01f4930b9c2b0aa46953": {
+   "purpose": "response_validation",
+   "created_at": "2026-10-28T16:45:42+00:00",
+   "value": {
+    "verdict": "PASS",
+    "defects": [],
+    "unanswered_ids": []
+   }
+  },
+  "266382c885650127da257b34b87fb30ca555fbce0fd51a4236b181dcf67edce7": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T16:46:15+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 2,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which provider has the highest appeal volume",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Provider_Name"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     },
+     {
+      "id": "q2",
+      "question_text": "what is its overturn rate?",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "metric",
+      "grain": "none",
+      "dimensions": [],
+      "metrics": [
+       "overturn_rate"
+      ],
+      "filters": {},
+      "depends_on": "q1",
+      "dependency_note": "Depends on provider identified in q1",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "945dad3f337c0d275af58b5708fffc9c188265a5238429b21d5739ce489cdad1": {
+   "purpose": "sql_generation",
+   "created_at": "2026-10-28T16:46:45+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Provider_Name`, COUNT(`Case Identifier`) AS `Total Appeals` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Provider_Name` ORDER BY `Total Appeals` DESC, `Provider_Name` ASC LIMIT 10",
+    "intent": "Returns the top 10 providers by total appeal volume",
+    "referenced_columns": [
+     "Provider_Name"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Provider_Name"
+    ],
+    "measures": [
+     {
+      "column": "Total Appeals",
+      "type": "count",
+      "numerator": "Total Appeals",
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "one row per provider",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "e233ebe388895c63c4a50bbab391ee04360a77e4e358ae75b1a1be98f2445c49": {
+   "purpose": "synthesis",
+   "created_at": "2026-10-28T16:47:33+00:00",
+   "value": {
+    "headline": "Prime Diagnostics has the highest appeal volume with 1,028 appeals.",
+    "answers": [
+     {
+      "id": "q1",
+      "question_text": "Which provider has the highest appeal volume",
+      "status": "ANSWERED",
+      "answer": "Prime Diagnostics has the highest Total Appeals at 1,028, 20.5 (2.0%) above the median provider (1,007.5).",
+      "why_not": ""
+     },
+     {
+      "id": "q2",
+      "question_text": "what is its overturn rate?",
+      "status": "NOT_ANSWERED",
+      "answer": "",
+      "why_not": "Data on overturn rate not available."
+     }
+    ],
+    "cross_cutting_note": ""
+   }
+  },
+  "462aac57561ebef66cce73b477947e74bd43c3869bab3b067067433498371113": {
+   "purpose": "response_validation",
+   "created_at": "2026-10-28T16:47:35+00:00",
+   "value": {
+    "verdict": "FAIL",
+    "defects": [
+     {
+      "check": "completeness",
+      "severity": "blocking",
+      "sub_question_id": "q2",
+      "offending_text": "The AI service could not generate a query for this question. Please retry.",
+      "explanation": "No answer provided for sub-question q2."
+     }
+    ],
+    "unanswered_ids": [
+     "q2"
+    ]
+   }
+  },
+  "05f7f0153f3aabe6dc621b21f29fc8e8ac1140a1f4f7cb73377c28e4318f5ee3": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T16:50:17+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which provider has the highest appeal volume and what is its overturn rate?",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Provider_Name"
+      ],
+      "metrics": [
+       "total_appeals",
+       "overturn_rate"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "b4616f56d659df40590e94c932a1f245a29441b4c02904d6dc2934afe5f5b875": {
+   "purpose": "sql_generation",
+   "created_at": "2026-10-28T16:50:19+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Provider_Name`, COUNT(`Case Identifier`) AS `Total Appeals`, SUM(CASE WHEN `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) AS `Overturned Cases`, SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END) AS `Closed Cases`, CASE WHEN SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END) = 0 THEN NULL ELSE ROUND(SUM(CASE WHEN `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) * 100.0 / SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END), 2) END AS `Overturn Rate` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Provider_Name` ORDER BY `Total Appeals` DESC, `Provider_Name` ASC LIMIT 1",
+    "intent": "Returns the provider with the highest appeal volume and its overturn rate.",
+    "referenced_columns": [
+     "Provider_Name",
+     "Case Identifier",
+     "Case Status",
+     "Determination"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Provider_Name"
+    ],
+    "measures": [
+     {
+      "column": "Overturn Rate",
+      "type": "percentage",
+      "numerator": "Overturned Cases",
+      "denominator": "Closed Cases"
+     }
+    ],
+    "expected_row_scale": "one row",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "cd67902308d548ee68919c1c9e20dd1ca4d8058de4c02d5fc0d261fae7e939d6": {
+   "purpose": "insight_narrative",
+   "created_at": "2026-10-28T16:50:31+00:00",
+   "value": {
+    "key_finding": "The provider has 1,028 total appeals, with 394 overturned, yielding a 38.3% overturn rate [F1, F2, F4]",
+    "detailed_analysis": [
+     "Closed cases total 800, representing 77.8% of the appeals [F3, F5]",
+     "The overturned cases (394) account for 38.3% of the total appeals, leaving 800 closed cases [F2, F4]",
+     "The distribution shows a clear split between overturned and closed outcomes, with no intermediate categories reported [F1, F2, F3]",
+     "The data reflects a single aggregate for the filtered population, so intra‑provider variation cannot be assessed from this snapshot [F1, F2, F3, F4, F5]"
+    ],
+    "business_impact": [
+     "A 38.3% overturn rate indicates a substantial proportion of appeals require re‑evaluation, potentially increasing compliance workload [F4]",
+     "The high overturn proportion may expose the organization to SLA breaches if rework is not managed efficiently [F4]"
+    ],
+    "recommended_actions": [
+     {
+      "priority": "Immediate",
+      "action": "Initiate a root‑cause analysis of overturned cases to identify common failure points",
+      "owner": "Compliance Lead",
+      "timeframe": "Within 30 days",
+      "success_measure": "Reduce overturned cases to 350 or fewer, lowering the overturn rate below 34% [F2, F4]",
+      "evidence_ids": [
+       "F2",
+       "F4"
+      ]
+     },
+     {
+      "priority": "Short-term",
+      "action": "Implement targeted training for providers on appeal criteria to reduce overturn likelihood",
+      "owner": "Provider Relations Manager",
+      "timeframe": "Within 90 days",
+      "success_measure": "Achieve a 5% reduction in overturned cases, targeting 394 to 374 [F2]",
+      "evidence_ids": [
+       "F2"
+      ]
+     },
+     {
+      "priority": "Strategic",
+      "action": "Deploy a predictive analytics tool to flag high‑risk appeals before submission",
+      "owner": "Data Analytics Team",
+      "timeframe": "Within 6 months",
+      "success_measure": "Decrease overturn rate to 30% or lower over the next fiscal year [F4]",
+      "evidence_ids": [
+       "F4"
+      ]
+     }
+    ]
+   }
+  },
+  "018b99d3a9b88a460450d75e72f74b7a6f489c5731dce905a3b72de79dce9753": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T16:51:05+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "What is the trend in overturn rates over the last 12 months?",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "trend",
+      "grain": "month",
+      "dimensions": [],
+      "metrics": [
+       "overturn_rate"
+      ],
+      "filters": {
+       "Closed Date (CaseHistory)": {
+        "from": "2025-10-01",
+        "to": "2026-10-31"
+       }
+      },
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "line"
+     }
+    ]
+   }
+  },
+  "6b17ba30a40582a20436dafd0554c5a0c45661ba549e27f7b89a9d5447b04d6d": {
+   "purpose": "sql_generation",
+   "created_at": "2026-10-28T16:51:38+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Month`, `Overturned Cases`, `Closed Cases`, CASE WHEN `Closed Cases` = 0 THEN NULL ELSE ROUND(100.0 * `Overturned Cases` / NULLIF(`Closed Cases`,0), 2) END AS `Overturn Rate` FROM (SELECT date_format(`Closed Date (CaseHistory)`, 'yyyy-MM') AS `Month`, SUM(CASE WHEN `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) AS `Overturned Cases`, SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END) AS `Closed Cases` FROM `my_catalog`.`default`.`appeals_final` WHERE `Closed Date (CaseHistory)` >= '2025-10-01' AND `Closed Date (CaseHistory)` <= '2026-10-31' GROUP BY `Month` ORDER BY `Month` ASC) AS sub",
+    "intent": "Trend of overturn rates by month over the last 12 months",
+    "referenced_columns": [
+     "Closed Date (CaseHistory)",
+     "Determination",
+     "Case Status"
+    ],
+    "filters_applied": {
+     "Closed Date (CaseHistory)": {
+      "from": "2025-10-01",
+      "to": "2026-10-31"
+     }
+    },
+    "grain": "month",
+    "dimensions": [],
+    "measures": [
+     {
+      "column": "Overturn Rate",
+      "type": "percentage",
+      "numerator": "Overturned Cases",
+      "denominator": "Closed Cases"
+     }
+    ],
+    "expected_row_scale": "one row per month",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "ed258350fe9224525ab5f0e7d4180c1f8e29c255817f12c6b25ee672a2e857d8": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T16:52:34+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "How many appeals were received each month?",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "trend",
+      "grain": "month",
+      "dimensions": [],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "line"
+     }
+    ]
+   }
+  },
+  "7728d42a6018ae3f3e4581dfc8c6f2ec82d7eecd9dd6a51f3c364d07ebd80c2b": {
+   "purpose": "sql_generation",
+   "created_at": "2026-10-28T16:53:05+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT date_format(`Received Date`,'yyyy-MM') AS Month, COUNT(`Case Identifier`) AS Total_Appeals FROM `my_catalog`.`default`.`appeals_final` GROUP BY date_format(`Received Date`,'yyyy-MM') ORDER BY date_format(`Received Date`,'yyyy-MM') ASC",
+    "intent": "Returns the monthly count of appeals received.",
+    "referenced_columns": [
+     "Case Identifier",
+     "Received Date"
+    ],
+    "filters_applied": {},
+    "grain": "month",
+    "dimensions": [],
+    "measures": [
+     {
+      "column": "Total_Appeals",
+      "type": "count",
+      "numerator": "Total Appeals",
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "one row per month",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "e8461de50f859710ba5eea3196fc7f48b32e08e581a8d3d27689f2e6f81b84d6": {
+   "purpose": "insight_narrative",
+   "created_at": "2026-10-28T16:53:17+00:00",
+   "value": {
+    "key_finding": "Total_Appeals averaged 322.6 per month over 31 periods, with the most recent month at 149, a drop of 53.8% from the average.[F10,F17] This is 174 fewer than in 2024-01.[F4]",
+    "detailed_analysis": [
+     "The series ranges from a peak of 370 in 2024-03 to a trough of 149 in 2026-07.[F8,F9] The standard deviation of 37.8 indicates moderate variability around the 31-period average.[F11] A linear slope of -1.5 per period captures the overall downward trend better than the first-to-last comparison alone.[F12] The largest single rise was +45 and the largest single fall was -171, highlighting occasional volatility.[F14,F15] Nineteen of the 31 periods exceeded the average, showing that high-volume months are still common.[F16]"
+    ],
+    "business_impact": [
+     "Planning capacity based on the 31-period average of 322.6 would over-provision resources for the current demand of 149.[F10,F17] The sharp decline may increase SLA exposure if staffing is not adjusted, as fewer appeals could lead to backlog during peak periods.[F9]"
+    ],
+    "recommended_actions": [
+     {
+      "priority": "Immediate",
+      "action": "Adjust staffing levels for the appeals desk to align with the current average volume of 149.",
+      "owner": "Operations Lead",
+      "timeframe": "2 weeks",
+      "success_measure": "Staffing covers at least 90% of the peak volume of 370.[F8]",
+      "evidence_ids": [
+       "F8"
+      ]
+     },
+     {
+      "priority": "Short-term",
+      "action": "Update the forecasting model to incorporate the linear slope of -1.5 per period.",
+      "owner": "Data Analytics",
+      "timeframe": "1 month",
+      "success_measure": "Forecast error remains below 10% for the next 3 periods.[F12]",
+      "evidence_ids": [
+       "F12"
+      ]
+     }
+    ]
+   }
+  },
+  "b3e999a20b118602e98d4df4711e55ea916afc6af4bb70bc2c7f93b91f47d00d": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T17:19:08+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Compare compliant vs non-compliant appeals by determination.",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "comparison",
+      "grain": "none",
+      "dimensions": [
+       "Determination"
+      ],
+      "metrics": [
+       "compliance_rate"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "1f6ef4a8a0a88239314980789aa6b4b8c401bac724b6b5d17104cc67eb729fc8": {
+   "purpose": "sql_generation",
+   "created_at": "2026-10-28T17:19:37+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Determination`, SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END) AS `Closed Cases`, SUM(CASE WHEN `Case Status` = 'CLOSED' AND upper(`Closed In Compliance Indicator`) = 'Y' THEN 1 ELSE 0 END) AS `Compliant Cases`, ROUND(100.0 * SUM(CASE WHEN `Case Status` = 'CLOSED' AND upper(`Closed In Compliance Indicator`) = 'Y' THEN 1 ELSE 0 END) / NULLIF(SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END),0), 2) AS `Compliance Rate` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Determination` ORDER BY `Determination` ASC",
+    "intent": "Returns compliance rate per determination, including closed and compliant case counts.",
+    "referenced_columns": [
+     "Case Status",
+     "Determination",
+     "Closed In Compliance Indicator"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Determination"
+    ],
+    "measures": [
+     {
+      "column": "Compliance Rate",
+      "type": "percentage",
+      "numerator": "Compliant Cases",
+      "denominator": "Closed Cases"
+     }
+    ],
+    "expected_row_scale": "one row per determination",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "e0b7ce0e01b4f1ebb27009ee937ab5bbf2bf26286ebc22daccb6fdf9e17dd1cd": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T17:20:56+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which plan sponsors contribute the most appeals?",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Plan Sponsor Name"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "40bdfd22045f4fd17d957b045a353707adde7a4157c624d4895abd5816f295d0": {
+   "purpose": "sql_generation",
+   "created_at": "2026-10-28T17:21:01+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Plan Sponsor Name`, COUNT(`Case Identifier`) AS `Total Appeals` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Plan Sponsor Name` ORDER BY `Total Appeals` DESC LIMIT 10",
+    "intent": "Returns the top 10 plan sponsors ranked by total number of appeals",
+    "referenced_columns": [
+     "Plan Sponsor Name",
+     "Case Identifier"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Plan Sponsor Name"
+    ],
+    "measures": [
+     {
+      "column": "Total Appeals",
+      "type": "count",
+      "numerator": "Total Appeals",
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "top 10 plan sponsors",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "214720e99251d1a2a0d099a29527eae8f90bf56fb8d03025ccd02aa3d5bf7082": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T17:22:18+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "For In-Network providers, what percentage of appeals were overturned?",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "metric",
+      "grain": "none",
+      "dimensions": [],
+      "metrics": [
+       "overturn_rate"
+      ],
+      "filters": {
+       "Network_Status": {
+        "equals": "In-Network"
+       }
+      },
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "f2828f213c7afd6ec960f0634d60c03276733a71b4af3acae582a3dada1d6065": {
+   "purpose": "sql_generation",
+   "created_at": "2026-10-28T17:22:25+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT SUM(CASE WHEN `Case Status` = 'CLOSED' AND `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) AS `Overturned Cases`, SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END) AS `Closed Cases`, CASE WHEN SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END) = 0 THEN NULL ELSE ROUND(100.0 * SUM(CASE WHEN `Case Status` = 'CLOSED' AND `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) / SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END), 2) END AS `Overturn Rate` FROM `my_catalog`.`default`.`appeals_final` WHERE upper(trim(`Network_Status`)) = 'IN-NETWORK'",
+    "intent": "Returns the percentage of closed appeals that were overturned for In-Network providers, along with the counts of overturned and closed cases",
+    "referenced_columns": [
+     "Network_Status",
+     "Case Status",
+     "Determination"
+    ],
+    "filters_applied": {
+     "Network_Status": {
+      "equals": "In-Network"
+     }
+    },
+    "grain": "none",
+    "dimensions": [],
+    "measures": [
+     {
+      "column": "Overturn Rate",
+      "type": "percentage",
+      "numerator": "Overturned Cases",
+      "denominator": "Closed Cases"
+     }
+    ],
+    "expected_row_scale": "one row",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "21179a928872205927ac55404451080803495e6921b7300017fd5d3dba4b8754": {
+   "purpose": "insight_narrative",
+   "created_at": "2026-10-28T17:22:40+00:00",
+   "value": {
+    "key_finding": "50.39% of closed cases were overturned, based on 3,243 overturned out of 6,437 closed cases [F1, F2]",
+    "detailed_analysis": [
+     "The overturn rate of 50.39% indicates that half of all closed cases were reversed, a level that is unusually high for an in‑network portfolio [F1, F2]",
+     "The metric is derived from a single aggregate count, so the spread across individual providers or time periods is not visible in the current evidence [F1, F2]",
+     "Because the direction is lower_is_better, this high percentage signals a potential issue in the initial adjudication process [F1, F2]"
+    ],
+    "business_impact": [
+     "A 50.39% overturn rate may double the workload for compliance and audit teams, as each overturned case requires additional review and documentation [F1, F2]",
+     "The high rate could expose the organization to increased SLA breaches if appeals are not resolved promptly, potentially impacting member satisfaction [F1, F2]"
+    ],
+    "recommended_actions": [
+     {
+      "priority": "Immediate",
+      "action": "Initiate a root‑cause review of all overturned cases to identify common triggers",
+      "owner": "Compliance Lead",
+      "timeframe": "Within 30 days",
+      "success_measure": "Reduce overturn rate to below 45% of closed cases [F1, F2]",
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ]
+     },
+     {
+      "priority": "Short-term",
+      "action": "Implement targeted training for providers on the most frequent appeal reasons",
+      "owner": "Provider Relations",
+      "timeframe": "Within 60 days",
+      "success_measure": "Decrease overturned cases by 10% of closed cases [F1, F2]",
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ]
+     },
+     {
+      "priority": "Strategic",
+      "action": "Develop a predictive model to flag high‑risk claims before final adjudication",
+      "owner": "Analytics Team",
+      "timeframe": "Within 90 days",
+      "success_measure": "Reduce overturn rate to 40% of closed cases [F1, F2]",
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ]
+     },
+     {
+      "priority": "Monitor",
+      "action": "Track monthly overturn rates and compare against the 50.39% baseline",
+      "owner": "Analytics Team",
+      "timeframe": "Ongoing",
+      "success_measure": "Maintain trend below 50% of closed cases [F1, F2]",
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ]
+     }
+    ]
+   }
+  },
+  "534b2d1e6b8f6da849e246c9ceef4c6cf870c8fd25a9ce3d9ffa15f489e02a46": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T17:27:07+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Show a stacked bar chart of distinct case counts by Provider Type, split by CaseStatusLabel. Include all status categories and display the counts on each segment.",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "breakdown",
+      "grain": "none",
+      "dimensions": [
+       "Provider_Type",
+       "Case Status"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "stacked_bar"
+     }
+    ]
+   }
+  },
+  "d7a88b8bf2e27bf2d4c245e79e316bf7dea61dc398a0e87fcae2d23f10b5e23e": {
+   "purpose": "sql_generation",
+   "created_at": "2026-10-28T17:27:10+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Provider_Type` AS `Provider Type`, `Case Status` AS `Case Status`, COUNT(DISTINCT `Case Identifier`) AS `Total Appeals` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Provider_Type`, `Case Status` ORDER BY `Provider_Type`, `Case Status`",
+    "intent": "Returns the count of distinct cases per provider type and case status for a stacked bar chart.",
+    "referenced_columns": [
+     "Provider_Type",
+     "Case Status",
+     "Case Identifier"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Provider_Type",
+     "Case Status"
+    ],
+    "measures": [
+     {
+      "column": "Total Appeals",
+      "type": "count",
+      "numerator": "Case Identifier",
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "one row per provider type per case status",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "cb4b8c69a97209c09fb51ee15cfd7ae1745014efb80e66b5d107fa8d70ff755a": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T17:28:56+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Show a 100% stacked bar chart comparing CaseStatusLabel proportions across Provider Types. Use all distinct cases within each provider type as the denominator, and display both percentages and original counts.",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "breakdown",
+      "grain": "none",
+      "dimensions": [
+       "Provider_Type",
+       "Case Status"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {
+       "Received Date": {
+        "from": "2024-01-01",
+        "to": "2026-07-13"
+       }
+      },
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "stacked_bar"
+     }
+    ]
+   }
+  },
+  "b1d9db59cff479fad12e106032a0de24d24f6bd0e5cc9725a166bc645d1c1eec": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T17:30:15+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "For closed cases, show a 100% stacked bar chart of DeterminationLabel by Network Status. Include every recorded determination category and show percentages with counts.",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "breakdown",
+      "grain": "none",
+      "dimensions": [
+       "Network_Status",
+       "Determination"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {
+       "Case Status": {
+        "equals": "CLOSED"
+       }
+      },
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "stacked_bar"
+     }
+    ]
+   }
+  },
+  "2cd98ecf99544d3cd0114db98a6321de108a28cc93eabef151b33347aa541c16": {
+   "purpose": "sql_generation",
+   "created_at": "2026-10-28T17:32:19+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Provider_Type`, percentile_cont(0.25) within group (order by datediff(`Closed Date (CaseHistory)`, `Received Date`)) AS `Q1 Turnaround Days`, percentile_cont(0.5)  within group (order by datediff(`Closed Date (CaseHistory)`, `Received Date`)) AS `Median Turnaround Days`, percentile_cont(0.75) within group (order by datediff(`Closed Date (CaseHistory)`, `Received Date`)) AS `Q3 Turnaround Days` FROM `my_catalog`.`default`.`appeals_final` WHERE `Case Status` = 'CLOSED' AND `Closed Date (CaseHistory)` >= '2025-01-01' AND `Closed Date (CaseHistory)` <= '2025-12-31' GROUP BY `Provider_Type` ORDER BY `Provider_Type`",
+    "intent": "Returns median and quartile turnaround days per provider type for closed cases in 2025.",
+    "referenced_columns": [
+     "Case Status",
+     "Closed Date (CaseHistory)",
+     "Received Date",
+     "Provider_Type"
+    ],
+    "filters_applied": {
+     "Case Status": {
+      "equals": "CLOSED"
+     },
+     "Closed Date (CaseHistory)": {
+      "from": "2025-01-01",
+      "to": "2025-12-31"
+     }
+    },
+    "grain": "none",
+    "dimensions": [],
+    "measures": [],
+    "expected_row_scale": "",
+    "is_aggregate": false,
+    "self_check": {},
+    "repair_applied": ""
+   }
+  },
+  "4a8ddd3ea9eccc22be315fd557dd3dadbd2804571193b475f0cb160814309164": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T17:33:47+00:00",
+   "value": {
+    "overall_status": "PARTIAL",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Show a Pareto chart of distinct closed cases marked Non-Compliant in ComplianceStatus, grouped by Current Unit Name. Include all units and display the cumulative percentage.",
+      "answerable": false,
+      "status": "INVALID_FILTER",
+      "reason": "Filter value for 'Closed In Compliance Indicator' not present in available_values",
+      "analysis_type": "breakdown",
+      "grain": "none",
+      "dimensions": [
+       "Current Unit Name"
+      ],
+      "metrics": [
+       "closed_appeals"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "49f78b4c2029ef0059739142abe82ca6eaa521589271520018e1797f29416833": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T17:34:14+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Show a treemap of distinct case counts using the hierarchy Provider Type → Provider Specialty. Display category names and case counts.",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "breakdown",
+      "grain": "none",
+      "dimensions": [
+       "Provider_Type",
+       "Provider_Specialty"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "4425676563ad8edb0f93a9ff5d59ce53b3d244eb5461fdc43740427c61631c56": {
+   "purpose": "sql_generation",
+   "created_at": "2026-10-28T17:34:35+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Provider_Type`,`Provider_Specialty`,COUNT(`Case Identifier`) AS `total_appeals` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Provider_Type`,`Provider_Specialty` ORDER BY `Provider_Type`,`Provider_Specialty`",
+    "intent": "Return the number of appeals per provider type and specialty for a treemap",
+    "referenced_columns": [
+     "Provider_Type",
+     "Provider_Specialty",
+     "Case Identifier"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Provider_Type",
+     "Provider_Specialty"
+    ],
+    "measures": [
+     {
+      "column": "total_appeals",
+      "type": "count",
+      "numerator": "total_appeals",
+      "denominator": "total_cases"
+     }
+    ],
+    "expected_row_scale": "one row per provider type per specialty",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "6d9766d94b87006227242d0b4725a0c3ac1f880d720784b03d046c7aea8a532d": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T17:36:22+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Show a bullet chart comparing the compliance rate among closed cases against the approved target configured in the application. Calculate the rate as distinct compliant closed cases divided by all distinct closed cases. Display the actual rate and target. If no approved target exists, report that instead of assuming one.",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "metric",
+      "grain": "none",
+      "dimensions": [],
+      "metrics": [
+       "compliance_rate"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "ffcabd6e652dba29f3b361ad041568a42be703079d195527f2517f4ed8d5d46e": {
+   "purpose": "sql_generation",
+   "created_at": "2026-10-28T17:36:40+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT ROUND(CASE WHEN closed_count = 0 THEN NULL ELSE CAST(compliant_count AS double) / closed_count * 100 END, 2) AS `Compliance Rate`, closed_count AS `Closed Cases`, compliant_count AS `Compliant Closed Cases`, NULL AS `Target` FROM (SELECT SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END) AS closed_count, SUM(CASE WHEN `Case Status` = 'CLOSED' AND upper(`Closed In Compliance Indicator`) = 'Y' THEN 1 ELSE 0 END) AS compliant_count FROM `my_catalog`.`default`.`appeals_final`) t",
+    "intent": "Return the compliance rate for closed cases and the target value (null if not configured).",
+    "referenced_columns": [
+     "Case Status",
+     "Closed In Compliance Indicator"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [],
+    "measures": [
+     {
+      "column": "Compliance Rate",
+      "type": "percentage",
+      "numerator": "Compliant Closed Cases",
+      "denominator": "Closed Cases"
+     }
+    ],
+    "expected_row_scale": "one row",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "2000509c77a2eef08d71af20f06b2b751cabd76173d5a94537d9ae094ddee3e3": {
+   "purpose": "insight_narrative",
+   "created_at": "2026-10-28T17:36:58+00:00",
+   "value": {
+    "key_finding": "The compliance rate among closed cases is 59.5% [F3], derived from 4,759 compliant cases out of 8,001 closed cases [F1, F2]. No approved target is configured.",
+    "detailed_analysis": [
+     "The compliance rate of 59.5% [F3] reflects a compliance count of 4,759 [F1] against a total of 8,001 closed cases [F2]. This rate indicates that 59.5% of all closed cases meet compliance criteria, leaving 40.5% non-compliant. The absolute difference between compliant and non-compliant cases is 3,242 [F1, F2]. The distribution is uniform across the population, with no extreme outliers reported. No trend evidence is available to assess changes over time."
+    ],
+    "business_impact": [
+     "Without a target, the organization cannot benchmark compliance performance, potentially masking underperformance in specific teams. The current compliance rate of 59.5% [F3] suggests that 3,242 cases (40.5%) remain non-compliant, impacting regulatory risk and potential penalties. Operationally, this may increase audit workload and delay case resolution."
+    ],
+    "recommended_actions": [
+     {
+      "priority": "Immediate",
+      "action": "Define an approved compliance target of at least 70% for closed cases",
+      "owner": "Compliance Manager",
+      "timeframe": "30 days",
+      "success_measure": "Achieve compliance rate of 70% [F3]",
+      "evidence_ids": [
+       "F3"
+      ]
+     },
+     {
+      "priority": "Short-term",
+      "action": "Implement a weekly compliance audit to identify the 3,242 non-compliant cases [F1, F2] and root cause",
+      "owner": "Operations Lead",
+      "timeframe": "60 days",
+      "success_measure": "Reduce non-compliant cases by 20% [F1, F2]",
+      "evidence_ids": [
+       "F1",
+       "F2"
+      ]
+     },
+     {
+      "priority": "Strategic",
+      "action": "Develop targeted training for teams with lowest compliance rates",
+      "owner": "Learning & Development",
+      "timeframe": "90 days",
+      "success_measure": "Increase compliance rate by 5 percentage points [F3]",
+      "evidence_ids": [
+       "F3"
+      ]
+     },
+     {
+      "priority": "Monitor",
+      "action": "Track compliance rate trend monthly to assess impact of interventions",
+      "owner": "Data Analytics",
+      "timeframe": "Ongoing",
+      "success_measure": "Maintain compliance rate above 65% [F3]",
+      "evidence_ids": [
+       "F3"
+      ]
+     }
+    ]
+   }
+  },
+  "e16af173890dff4bc9a9fad5e3b78dacfc1b160c22c46e073aba873ec9e747df": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T17:37:37+00:00",
+   "value": {
+    "overall_status": "UNRELATED",
+    "question_count": 0,
+    "sub_questions": []
+   }
+  },
+  "99100752e9413c2528718f8a90ab58a34f749e4942e817159b1cb90f1d205fcc": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T17:38:50+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Show the weekly trend of distinct cases received during the latest complete three months available in the data.",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "trend",
+      "grain": "week",
+      "dimensions": [],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {
+       "Received Date": {
+        "from": "2026-04-01",
+        "to": "2026-06-30"
+       }
+      },
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "line"
+     }
+    ]
+   }
+  },
+  "f064264a10c0af95d148e5124d8b0f3973655a97932e5bd8a73db9e44f8d80af": {
+   "purpose": "sql_generation",
+   "created_at": "2026-10-28T17:39:04+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT date_format(date_trunc('week', `Received Date`), 'yyyy-MM-dd') AS `Week Start`, COUNT(DISTINCT `Case Identifier`) AS `Total Appeals` FROM `my_catalog`.`default`.`appeals_final` WHERE `Received Date` >= '2026-04-01' AND `Received Date` <= '2026-06-30' GROUP BY 1 ORDER BY 1 ASC",
+    "intent": "Weekly trend of distinct cases received between 2026-04-01 and 2026-06-30",
+    "referenced_columns": [
+     "Case Identifier",
+     "Received Date"
+    ],
+    "filters_applied": {
+     "Received Date": {
+      "from": "2026-04-01",
+      "to": "2026-06-30"
+     }
+    },
+    "grain": "week",
+    "dimensions": [],
+    "measures": [
+     {
+      "column": "Total Appeals",
+      "type": "count",
+      "numerator": "Distinct Case Identifier",
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "one row per week",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "176744a66aa07167640b80e4a3028722650fd1032bdf3cd144bd75c6897cde8a": {
+   "purpose": "planner",
+   "created_at": "2026-10-28T17:40:39+00:00",
+   "value": {
+    "overall_status": "PARTIAL",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Show monthly median and 90th-percentile turnaround days for closed cases during 2025.",
+      "answerable": false,
+      "status": "INVALID_FILTER",
+      "reason": "Requested metrics 'median' and '90th-percentile' are not available in the certified metric dictionary.",
+      "analysis_type": "trend",
+      "grain": "month",
+      "dimensions": [],
+      "metrics": [],
+      "filters": {
+       "Received Date": {
+        "from": "2025-01-01",
+        "to": "2025-12-31"
+       }
+      },
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "41ba1d80cf7f58e445be6d2efc03d874c152942d0d186c5cb06375ff9b4f73d5": {
+   "purpose": "planner",
+   "created_at": "2026-11-04T16:54:33+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "show me the average tat in sponsor name based on Sunrise Hospital",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "metric",
+      "grain": "none",
+      "dimensions": [],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {
+       "Plan Sponsor Name": {
+        "equals": "Sunrise Hospital"
+       }
+      },
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "8b464e6dfe607204eb8d8f55bdd014467a8537ab4207301c38b85e3e4a8daf2e": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-04T16:54:36+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT ROUND(AVG(CASE WHEN `Case Status` = 'CLOSED' THEN datediff(`Closed Date (CaseHistory)`, `Received Date`) END),2) AS `Average Turnaround Days` FROM `my_catalog`.`default`.`appeals_final` WHERE upper(trim(`Plan Sponsor Name`)) = 'SUNRISE HOSPITAL'",
+    "intent": "returns the average turnaround days for closed cases at Sunrise Hospital",
+    "referenced_columns": [
+     "Plan Sponsor Name",
+     "Closed Date (CaseHistory)",
+     "Received Date",
+     "Case Status"
+    ],
+    "filters_applied": {
+     "Plan Sponsor Name": {
+      "equals": "Sunrise Hospital"
+     }
+    },
+    "grain": "none",
+    "dimensions": [],
+    "measures": [
+     {
+      "column": "Average Turnaround Days",
+      "type": "numeric",
+      "numerator": "Average Turnaround Days",
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "one row",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "6a2419d2e56af7a991765c113acc7c7d99d3fe378c626062d978c682bdebeb1f": {
+   "purpose": "planner",
+   "created_at": "2026-11-04T16:55:56+00:00",
+   "value": {
+    "overall_status": "PARTIAL",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "show me the average tat based on Sunrise Hospital",
+      "answerable": false,
+      "status": "INVALID_FILTER",
+      "reason": "Filter value 'Sunrise Hospital' not in available values for Provider_Name",
+      "analysis_type": "metric",
+      "grain": "none",
+      "dimensions": [],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {
+       "Provider_Name": "Sunrise Hospital"
+      },
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "bb273ad5b0af5e8c3e590ccbf67480f80ce1706cbf97054b31a90acac030d8e8": {
+   "purpose": "planner",
+   "created_at": "2026-11-04T16:58:11+00:00",
+   "value": {
+    "overall_status": "PARTIAL",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "give me average tat of sponsor type should be individual.",
+      "answerable": false,
+      "status": "INVALID_FILTER",
+      "reason": "Sponsor type is not a column in the dataset.",
+      "analysis_type": "metric",
+      "grain": "none",
+      "dimensions": [],
+      "metrics": [],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "eb976ad8fdf634cbb38f6e78ffb30e7730d59916fb3bffa50c233028bc985190": {
+   "purpose": "planner",
+   "created_at": "2026-11-04T16:58:31+00:00",
+   "value": {
+    "overall_status": "PARTIAL",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "give me average tat of plan sponsor type should be individual.",
+      "answerable": false,
+      "status": "INVALID_FILTER",
+      "reason": "plan sponsor type is not a column in the dataset",
+      "analysis_type": "metric",
+      "grain": "none",
+      "dimensions": [],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "3670b261567faea0f35b7977f30a22cd90276c929c8847c8313fd5e98e0a6c0d": {
+   "purpose": "planner",
+   "created_at": "2026-11-04T17:01:01+00:00",
+   "value": {
+    "overall_status": "PARTIAL",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "give me average tat of plan sponsor type should be individual.",
+      "answerable": false,
+      "status": "INVALID_FILTER",
+      "reason": "Filter on non-existent column 'Plan Sponsor Type'.",
+      "analysis_type": "metric",
+      "grain": "none",
+      "dimensions": [],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "a0deb0b23ff6f99c20f3e0a39ed996bb9a73e46c13b9121726a5c9eebcf9ab7e": {
+   "purpose": "planner",
+   "created_at": "2026-11-04T17:02:09+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "show me average tat of provider sunrise",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "metric",
+      "grain": "none",
+      "dimensions": [],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {
+       "Provider_Name": {
+        "in": [
+         "Sunrise Hospital"
+        ]
+       }
+      },
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "01fdbeeaee58f0a960c5cae25e0fab594b37e214a57a3b27612de01cbac7d842": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-04T17:02:10+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT ROUND(AVG(CASE WHEN `Case Status` = 'CLOSED' THEN datediff(`Closed Date (CaseHistory)`, `Received Date`) END),2) AS `Average Turnaround Days` FROM `my_catalog`.`default`.`appeals_final` WHERE `Provider_Name` = 'Sunrise Hospital' AND `Case Status` = 'CLOSED'",
+    "intent": "average turnaround days for closed appeals for provider Sunrise Hospital",
+    "referenced_columns": [
+     "Provider_Name",
+     "Case Status",
+     "Closed Date (CaseHistory)",
+     "Received Date"
+    ],
+    "filters_applied": {
+     "Provider_Name": {
+      "in": [
+       "Sunrise Hospital"
+      ]
+     }
+    },
+    "grain": "none",
+    "dimensions": [],
+    "measures": [
+     {
+      "column": "Average Turnaround Days",
+      "type": "numeric",
+      "numerator": "Turnaround Days",
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "one row",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "aaa6d7928a9cae8c6e5b7ac5a6527ffbefc810ab08fe29a3e2a21de4fc6aa252": {
+   "purpose": "planner",
+   "created_at": "2026-11-04T17:08:03+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "which plan sponsor has the highest risk",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Plan Sponsor Name"
+      ],
+      "metrics": [
+       "overturn_rate"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "50a205afe00f46db0049eda8422262532502f788681d3943ee9377eb2421ad34": {
+   "purpose": "planner",
+   "created_at": "2026-11-04T18:05:05+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which operational unit has the best TAT performance?",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Current Unit Name"
+      ],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "867fae7694e3cfcddc6378e536cd89bcac65b2e2294f787c6cfc153090839831": {
+   "purpose": "planner",
+   "created_at": "2026-11-04T19:00:11+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which plan sponsor has high appeal volume but also a high overturn rate?",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "breakdown",
+      "grain": "none",
+      "dimensions": [
+       "Plan Sponsor Name"
+      ],
+      "metrics": [
+       "total_appeals",
+       "overturn_rate"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "grouped_bar"
+     }
+    ]
+   }
+  },
+  "30766e6e892ee0073ded8627bdecee4cda5c391d679b71aa0ba8fa4f1e514439": {
+   "purpose": "planner",
+   "created_at": "2026-11-04T19:02:10+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which plan sponsor has high appeal volume but also a high overturn rate?",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Plan Sponsor Name"
+      ],
+      "metrics": [
+       "total_appeals",
+       "overturn_rate"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "be7a12ab2f7c28f0d6d5cb70dd17b7c156d7ee4bda74f585585a9450eb776e5d": {
+   "purpose": "planner",
+   "created_at": "2026-11-04T19:03:56+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "What is the trend in overturn rates over the last 12 months?",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "trend",
+      "grain": "month",
+      "dimensions": [],
+      "metrics": [
+       "overturn_rate"
+      ],
+      "filters": {
+       "Closed Date (CaseHistory)": {
+        "from": "2025-11-05",
+        "to": "2026-11-05"
+       }
+      },
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "line"
+     }
+    ]
+   }
+  },
+  "2eacb78bf9b537c60bfbdec6c2c4d896732a88a0bbbf4ddd27bdb039b151022e": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-04T19:03:57+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Month`,`Overturned Cases`,`Closed Cases`,ROUND(CAST(`Overturned Cases` AS DOUBLE)/NULLIF(`Closed Cases`,0)*100,2) AS `Overturn Rate` FROM (SELECT date_format(`Closed Date (CaseHistory)`, 'yyyy-MM') AS `Month`,SUM(CASE WHEN `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) AS `Overturned Cases`,SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END) AS `Closed Cases` FROM `my_catalog`.`default`.`appeals_final` WHERE `Closed Date (CaseHistory)` >= '2025-11-05' AND `Closed Date (CaseHistory)` <= '2026-11-05' GROUP BY `Month`) t ORDER BY `Month` ASC",
+    "intent": "Returns the monthly trend of overturn rates for closed appeals between 2025-11-05 and 2026-11-05.",
+    "referenced_columns": [
+     "Closed Date (CaseHistory)",
+     "Determination",
+     "Case Status"
+    ],
+    "filters_applied": {
+     "Closed Date (CaseHistory)": {
+      "from": "2025-11-05",
+      "to": "2026-11-05"
+     }
+    },
+    "grain": "month",
+    "dimensions": [],
+    "measures": [
+     {
+      "column": "Overturn Rate",
+      "type": "percentage",
+      "numerator": "Overturned Cases",
+      "denominator": "Closed Cases"
+     }
+    ],
+    "expected_row_scale": "one row per month",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "1d99d407f7965cd64d993e9f03ed76697f4022f8229c0ef8e5587911f655716c": {
+   "purpose": "planner",
+   "created_at": "2026-11-04T19:05:33+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "How many appeals were received each month?",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "trend",
+      "grain": "month",
+      "dimensions": [],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "line"
+     }
+    ]
+   }
+  },
+  "cab24889fadfb03f195c5327c4b8fbc2964447e7a3a2b94749165e0e473b8cca": {
+   "purpose": "planner",
+   "created_at": "2026-11-04T19:11:18+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Show me the top 10 providers by appeal count.",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Provider_ID",
+       "Provider_Name"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "ef249eb2a615fee351d9a7a75a6d24760c19164334c863e9d1837152bde16d13": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-04T19:11:20+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Provider_ID`, `Provider_Name`, COUNT(`Case Identifier`) AS `Total Appeals` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Provider_ID`, `Provider_Name` ORDER BY `Total Appeals` DESC, `Provider_ID` ASC LIMIT 10",
+    "intent": "Returns the top 10 providers ranked by total appeal count",
+    "referenced_columns": [
+     "Provider_ID",
+     "Provider_Name",
+     "Case Identifier"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Provider_ID",
+     "Provider_Name"
+    ],
+    "measures": [
+     {
+      "column": "Total Appeals",
+      "type": "count",
+      "numerator": "Total Appeals",
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "one row per provider",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "4cfeab56e4c911924ecb29ad524e8be3247bfa0183c65966754ce169938d3f21": {
+   "purpose": "planner",
+   "created_at": "2026-11-04T19:39:08+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 2,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which sponsor has the highest number of appeals",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Plan Sponsor Name"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     },
+     {
+      "id": "q2",
+      "question_text": "how are those appeals being determined?",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "breakdown",
+      "grain": "none",
+      "dimensions": [
+       "Determination"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": "q1",
+      "dependency_note": "Uses sponsor identified in first sub-question",
+      "expects_chart": true,
+      "chart_hint": "stacked_bar"
+     }
+    ]
+   }
+  },
+  "a25d69e58aefe7ab3e858d8f3a36130548d05c00dbf2e08160a3dfea2b3725bc": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-04T19:39:17+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Determination`, COUNT(`Case Identifier`) AS `Total Appeals` FROM `my_catalog`.`default`.`appeals_final` WHERE `Plan Sponsor Name` = 'COSTCO WHOLESALE CORPORATION' GROUP BY `Determination` ORDER BY `Determination` ASC",
+    "intent": "total appeals per determination for the specified sponsor",
+    "referenced_columns": [
+     "Plan Sponsor Name",
+     "Determination",
+     "Case Identifier"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Determination"
+    ],
+    "measures": [
+     {
+      "column": "Total Appeals",
+      "type": "count",
+      "numerator": "Total Appeals",
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "one row per determination",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "d43a27feccca28fb8681bc8f309198e73d80920a479aa098763a0d24e6876e88": {
+   "purpose": "response_validation",
+   "created_at": "2026-11-04T19:39:52+00:00",
+   "value": {
+    "verdict": "PASS",
+    "defects": [],
+    "unanswered_ids": []
+   }
+  },
+  "aae6c6d730cb5fd7fd52e29893eb00f97312f7915c4189bfa9eab449c4717146": {
+   "purpose": "planner",
+   "created_at": "2026-11-04T20:08:33+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 2,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which sponsor has the highest number of appeals",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Plan Sponsor Name"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     },
+     {
+      "id": "q2",
+      "question_text": "how are those appeals being determined?",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "breakdown",
+      "grain": "none",
+      "dimensions": [
+       "Determination"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": "q1",
+      "dependency_note": "Uses sponsor identified in q1",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "4324919bf7bf57caebfa0b6d3b652ce31b7c2ad1ea7a35fbac3e4a01eb665cb7": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-04T20:08:41+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Determination`, COUNT(`Case Identifier`) AS `Total Appeals` FROM `my_catalog`.`default`.`appeals_final` WHERE `Plan Sponsor Name` = 'COSTCO WHOLESALE CORPORATION' GROUP BY `Determination` ORDER BY `Total Appeals` DESC, `Determination` ASC",
+    "intent": "Returns the total number of appeals per determination for the specified sponsor",
+    "referenced_columns": [
+     "Determination",
+     "Plan Sponsor Name",
+     "Case Identifier"
+    ],
+    "filters_applied": {
+     "Plan Sponsor Name": {
+      "value": "COSTCO WHOLESALE CORPORATION"
+     }
+    },
+    "grain": "none",
+    "dimensions": [
+     "Determination"
+    ],
+    "measures": [
+     {
+      "column": "Total Appeals",
+      "type": "count",
+      "numerator": "Appeals",
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "one row per determination",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "038e3abeea7102bafb7890a2289eae76c461db531621b3a5cddce501e55c134a": {
+   "purpose": "response_validation",
+   "created_at": "2026-11-04T20:09:13+00:00",
+   "value": {
+    "verdict": "PASS",
+    "defects": [],
+    "unanswered_ids": []
+   }
+  },
+  "0ed95a3ea6b151eb78630168af45e528e3b2fbeb4adfe7a4089d8b0fa34fb6a7": {
+   "purpose": "planner",
+   "created_at": "2026-11-04T20:27:14+00:00",
+   "value": {
+    "overall_status": "PARTIAL",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "show me avg tat of sponsor sunrise",
+      "answerable": false,
+      "status": "INVALID_FILTER",
+      "reason": "Filter value 'sunrise' not in available values for Plan Sponsor Name",
+      "analysis_type": "metric",
+      "grain": "none",
+      "dimensions": [],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "2a07be8eedf08bcb08e9f86cfb22a44adab7ccdbf6ea2d76d45a1d464ed48bb0": {
+   "purpose": "planner",
+   "created_at": "2026-11-06T15:42:11+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which business units have the highest compliance rate?",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Current Unit Name"
+      ],
+      "metrics": [
+       "compliance_rate",
+       "closed_appeals"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "c9ff81fe800b3b68c2626ca50e6eb2dbb9e6b0817448336b9a9be92e597e11a7": {
+   "purpose": "planner",
+   "created_at": "2026-11-06T15:42:58+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Show providers with TAT greater than 30 days.",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "breakdown",
+      "grain": "none",
+      "dimensions": [
+       "Provider_Name"
+      ],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {
+       "avg_turnaround_days": {
+        "gt": 30
+       }
+      },
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "f3a91911dff2de42e298573dc2d511f89c9e08219ef3d00938ae6681016ffeea": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-06T15:43:12+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Provider_Name`, ROUND(AVG(CASE WHEN `Case Status` = 'CLOSED' THEN datediff(`Closed Date (CaseHistory)`, `Received Date`) END),2) AS `Avg Turnaround Days` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Provider_Name` HAVING AVG(CASE WHEN `Case Status` = 'CLOSED' THEN datediff(`Closed Date (CaseHistory)`, `Received Date`) END) > 30 ORDER BY `Avg Turnaround Days` DESC, `Provider_Name` ASC",
+    "intent": "Returns providers whose average turnaround days for closed cases exceed 30 days.",
+    "referenced_columns": [
+     "Provider_Name",
+     "Case Status",
+     "Closed Date (CaseHistory)",
+     "Received Date"
+    ],
+    "filters_applied": {
+     "avg_turnaround_days": {
+      "gt": 30
+     }
+    },
+    "grain": "none",
+    "dimensions": [
+     "Provider_Name"
+    ],
+    "measures": [
+     {
+      "column": "Avg Turnaround Days",
+      "type": "average",
+      "numerator": "Turnaround Days",
+      "denominator": "Closed Cases"
+     }
+    ],
+    "expected_row_scale": "one row per provider",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "817cf9e4a9c1998a664a3457f98cc29c306641f9cfa1d16bc65ad514730c4185": {
+   "purpose": "planner",
+   "created_at": "2026-11-06T15:44:25+00:00",
+   "value": {
+    "overall_status": "PARTIAL",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Show providers with TAT greater than 30 days.",
+      "answerable": false,
+      "status": "INVALID_FILTER",
+      "reason": "Cannot filter on derived metric turnaround_days > 30 days using available column filters.",
+      "analysis_type": "drilldown",
+      "grain": "none",
+      "dimensions": [],
+      "metrics": [],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "2e1c74911b99ea5216d118cbcae794c1ebcc6e678f08191b9b470e6e31eb7661": {
+   "purpose": "planner",
+   "created_at": "2026-11-06T15:44:50+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Top 10 providers by highest appeal TAT.",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Provider_Name"
+      ],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {
+       "Case Status": {
+        "equals": "CLOSED"
+       }
+      },
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "40d39acb2a50767df9f9a1f6df16906ff4eb7c3e8d8960d3131b5b81cd7d3023": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-06T15:44:57+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Provider_Name`, ROUND(AVG(datediff(`Closed Date (CaseHistory)`, `Received Date`)), 2) AS `Avg Turnaround Days` FROM `my_catalog`.`default`.`appeals_final` WHERE `Case Status` = 'CLOSED' GROUP BY `Provider_Name` ORDER BY `Avg Turnaround Days` DESC, `Provider_Name` ASC LIMIT 10",
+    "intent": "Returns the top 10 providers with the highest average appeal turnaround time for closed cases",
+    "referenced_columns": [
+     "Provider_Name",
+     "Case Status",
+     "Closed Date (CaseHistory)",
+     "Received Date"
+    ],
+    "filters_applied": {
+     "Case Status": {
+      "equals": "CLOSED"
+     }
+    },
+    "grain": "none",
+    "dimensions": [
+     "Provider_Name"
+    ],
+    "measures": [
+     {
+      "column": "Avg Turnaround Days",
+      "type": "average",
+      "numerator": "Turnaround Days",
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "top 10 providers",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "09e8717b2f973e455e8f6d8b5818b0d87a68f84d1806c6fd3da1e08764b5b7e0": {
+   "purpose": "insight_narrative",
+   "created_at": "2026-11-06T15:45:21+00:00",
+   "value": {
+    "key_finding": "KidCare Pediatrics has the highest Avg Turnaround Days at 14.25 days, the slowest among the 10 providers. [F11,F1] It is 0.14 days (1.0%) slower than the median of 14.11 days. [F6,F7,F4]",
+    "detailed_analysis": [
+     "The range of Avg Turnaround Days spans 13.90 days to 14.25 days, a spread of 0.35 days. [F8]",
+     "The runner‑up, Rapid Urgent Care, sits only 0.02 days behind KidCare Pediatrics, illustrating a tight top‑tier cluster. [F12,F13]",
+     "Four providers outperform the median, while the simple average of 14.09 days sits just below it. [F14,F5]",
+     "Variation is minimal, with a coefficient of variation of 0.7% and all providers within the interquartile fences of 13.90 to 14.28 days. [F15,F16,F17]"
+    ],
+    "business_impact": [
+     "All providers remain well within the 30‑day SLA, leaving 15.75 days of headroom for the slowest performer. [F18,F20]",
+     "Because no provider exceeds the SLA, the risk of SLA breaches is currently low, but the narrow spread suggests limited margin for error. [F19,F18]"
+    ],
+    "recommended_actions": [
+     {
+      "priority": "Immediate",
+      "action": "Reduce KidCare Pediatrics Avg Turnaround Days to match the median of 14.11 days.",
+      "owner": "Operations Lead",
+      "timeframe": "within 30 days",
+      "success_measure": "Avg Turnaround Days at 14.11 days",
+      "evidence_ids": [
+       "F6",
+       "F7",
+       "F4"
+      ]
+     },
+     {
+      "priority": "Short-term",
+      "action": "Benchmark KidCare Pediatrics against HealthFirst Imaging to close the 0.35‑day gap.",
+      "owner": "Quality Assurance Manager",
+      "timeframe": "within 60 days",
+      "success_measure": "Avg Turnaround Days at 13.90 days",
+      "evidence_ids": [
+       "F9",
+       "F10",
+       "F11"
+      ]
+     },
+     {
+      "priority": "Strategic",
+      "action": "Maintain coefficient of variation below 0.7% to ensure consistent performance across providers.",
+      "owner": "Analytics Director",
+      "timeframe": "ongoing quarterly review",
+      "success_measure": "Coefficient of variation at 0.7% or lower",
+      "evidence_ids": [
+       "F15"
+      ]
+     },
+     {
+      "priority": "Monitor",
+      "action": "Verify all providers stay within the 30‑day SLA and interquartile fences.",
+      "owner": "Compliance Officer",
+      "timeframe": "monthly audit",
+      "success_measure": "Zero providers above 30 days and within 13.90–14.28 days",
+      "evidence_ids": [
+       "F18",
+       "F19",
+       "F16",
+       "F17"
+      ]
+     }
+    ]
+   }
+  },
+  "c9034f2357932f72f0b969b3a4149c4aaf576c095c3a57de095d1905f8922768": {
+   "purpose": "planner",
+   "created_at": "2026-11-06T15:46:02+00:00",
+   "value": {
+    "overall_status": "PARTIAL",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Show providers with TAT greater than 30 days.",
+      "answerable": false,
+      "status": "INVALID_FILTER",
+      "reason": "Cannot filter on derived metric turnaround_days > 30 days using available column filters.",
+      "analysis_type": "breakdown",
+      "grain": "none",
+      "dimensions": [],
+      "metrics": [],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "1ddd37eab512c0b9ae21c0a9150316f96e413f76dbf43580f339b4ffd246033b": {
+   "purpose": "planner",
+   "created_at": "2026-11-06T15:46:54+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Top 10 providers by lowest appeal TAT.",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Provider_Name"
+      ],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {
+       "Case Status": {
+        "equals": "CLOSED"
+       }
+      },
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "9d1891579899c731aa5a60e2889c6cc37e5cb0e8eba97809dd60a7c525dcc5bf": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-06T15:47:02+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Provider_Name`, AVG(datediff(`Closed Date (CaseHistory)`, `Received Date`)) AS `Avg Turnaround Days` FROM `my_catalog`.`default`.`appeals_final` WHERE `Case Status` = 'CLOSED' GROUP BY `Provider_Name` ORDER BY `Avg Turnaround Days` ASC, `Provider_Name` ASC LIMIT 10",
+    "intent": "Top 10 providers by lowest average appeal turnaround time for closed cases.",
+    "referenced_columns": [
+     "Provider_Name",
+     "Case Status",
+     "Closed Date (CaseHistory)",
+     "Received Date"
+    ],
+    "filters_applied": {
+     "Case Status": {
+      "equals": "CLOSED"
+     }
+    },
+    "grain": "none",
+    "dimensions": [
+     "Provider_Name"
+    ],
+    "measures": [
+     {
+      "column": "Avg Turnaround Days",
+      "type": "average",
+      "numerator": "Turnaround Days",
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "one row per provider",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "982e463d8b4becae710a90fa40944ce07ed90e56eb96ba125f9e8bfd1c07cb81": {
+   "purpose": "planner",
+   "created_at": "2026-11-06T15:50:14+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Show providers with TAT greater than 60 days.",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "drilldown",
+      "grain": "none",
+      "dimensions": [
+       "Provider_ID",
+       "Provider_Name",
+       "Provider_Type",
+       "Provider_Specialty",
+       "Network_Status"
+      ],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "5e1416c15f61e34151f3d4bfa4de57960af4e9ce2707e9c6a429672e6eea70b6": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-06T15:50:44+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Provider_ID`, `Provider_Name`, `Provider_Type`, `Provider_Specialty`, `Network_Status`, AVG(CASE WHEN `Case Status` = 'CLOSED' THEN datediff(`Closed Date (CaseHistory)`, `Received Date`) END) AS `Avg Turnaround Days` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Provider_ID`, `Provider_Name`, `Provider_Type`, `Provider_Specialty`, `Network_Status` HAVING AVG(CASE WHEN `Case Status` = 'CLOSED' THEN datediff(`Closed Date (CaseHistory)`, `Received Date`) END) > 60 ORDER BY `Avg Turnaround Days` DESC, `Provider_ID` ASC",
+    "intent": "Return providers whose average turnaround time for closed cases exceeds 60 days",
+    "referenced_columns": [
+     "Provider_ID",
+     "Provider_Name",
+     "Provider_Type",
+     "Provider_Specialty",
+     "Network_Status",
+     "Case Status",
+     "Closed Date (CaseHistory)",
+     "Received Date"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Provider_ID",
+     "Provider_Name",
+     "Provider_Type",
+     "Provider_Specialty",
+     "Network_Status"
+    ],
+    "measures": [
+     {
+      "column": "Avg Turnaround Days",
+      "type": "average",
+      "numerator": null,
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "one row per provider",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "631cf7dd69125b1cc0a56be38f5db6a513c6e6a5ec4cabba55f433cbf351ef37": {
+   "purpose": "planner",
+   "created_at": "2026-11-06T15:51:23+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which plan sponsors contribute the most appeals?",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Plan Sponsor Name"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": null,
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "93cad76c62947fd4cf3bf34b2dbc04d5288d468ef02e9b562500b5578c802f3d": {
+   "purpose": "planner",
+   "created_at": "2026-11-06T16:27:33+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "show me average tat unit mcm appeals",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "metric",
+      "grain": "none",
+      "dimensions": [],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {
+       "Current Unit Name": {
+        "in": [
+         "MCM APPEALS UNIT"
+        ]
+       }
+      },
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "12d25cf44ba27dee136fcec800f3f265b7ac4a24e7ba3991d7b09393e3090e2f": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-06T16:27:39+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT AVG(CASE WHEN `Case Status` = 'CLOSED' THEN datediff(`Closed Date (CaseHistory)`, `Received Date`) END) AS `Average_Turnaround_Days` FROM `my_catalog`.`default`.`appeals_final` WHERE `Current Unit Name` = 'MCM APPEALS UNIT'",
+    "intent": "average turnaround days for MCM APPEALS UNIT",
+    "referenced_columns": [
+     "Case Status",
+     "Closed Date (CaseHistory)",
+     "Received Date",
+     "Current Unit Name"
+    ],
+    "filters_applied": {
+     "Current Unit Name": {
+      "in": [
+       "MCM APPEALS UNIT"
+      ]
+     }
+    },
+    "grain": "none",
+    "dimensions": [],
+    "measures": [
+     {
+      "column": "Average Turnaround Days",
+      "type": "number",
+      "numerator": "Average Turnaround Days",
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "one row",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "1032c07273cb69cba9efb4c54b23e3ada2b6c083c9bc879a241c0728635d5b4d": {
+   "purpose": "planner",
+   "created_at": "2026-11-06T16:28:58+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "how many appeals has clos",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "metric",
+      "grain": "none",
+      "dimensions": [],
+      "metrics": [
+       "closed_appeals"
+      ],
+      "filters": {},
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "62f973af760bfef8c167edf00334c9f1b68364475d74c2680b249fe5dcd3effc": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-06T16:29:05+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END) AS `Closed Appeals` FROM `my_catalog`.`default`.`appeals_final`",
+    "intent": "returns the total number of closed appeals",
+    "referenced_columns": [
+     "Case Status"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [],
+    "measures": [
+     {
+      "column": "Closed Appeals",
+      "type": "count",
+      "numerator": "Closed Appeals",
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "one row",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "83ccb7e099971df4adc122d33a05abd92e767949fb6260ff6e069b1cbbd21af2": {
+   "purpose": "planner",
+   "created_at": "2026-11-06T16:31:18+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "show me average tat provider hospital",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "metric",
+      "grain": "none",
+      "dimensions": [],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {
+       "Provider_Type": {
+        "in": [
+         "Hospital"
+        ]
+       }
+      },
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "1c04b224f8f1afd7da2d6b6e625600fa65010494d0478a90966733a4872b6014": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-06T16:31:20+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT AVG(CASE WHEN `Case Status` = 'CLOSED' THEN datediff(`Closed Date (CaseHistory)`, `Received Date`) END) AS `Average Turnaround Days` FROM `my_catalog`.`default`.`appeals_final` WHERE `Provider_Type` = 'Hospital'",
+    "intent": "returns the average turnaround days for closed appeals where the provider type is Hospital",
+    "referenced_columns": [
+     "Provider_Type",
+     "Case Status",
+     "Closed Date (CaseHistory)",
+     "Received Date"
+    ],
+    "filters_applied": {
+     "Provider_Type": {
+      "in": [
+       "Hospital"
+      ]
+     }
+    },
+    "grain": "none",
+    "dimensions": [],
+    "measures": [
+     {
+      "column": "Average Turnaround Days",
+      "type": "average",
+      "numerator": "Turnaround Days",
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "one row",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "918bebb599a4466daeb386fbcf19bae4d281517663eae81f6eaf560c84d73442": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T13:06:06+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which plan sponsor has high appeal volume but also a high overturn rate?",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Plan Sponsor Name"
+      ],
+      "metrics": [
+       "total_appeals",
+       "overturn_rate"
+      ],
+      "filters": {},
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "e65d2829fa7c89fc1e5fb41d0ec463e29cac890a1e945add24960e8970e212be": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-08T13:08:03+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Plan Sponsor Name`, COUNT(`Case Identifier`) AS `Total Appeals`, SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END) AS `Closed Cases`, SUM(CASE WHEN `Case Status` = 'CLOSED' AND `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) AS `Overturned Cases`, ROUND(100.0 * SUM(CASE WHEN `Case Status` = 'CLOSED' AND `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) / NULLIF(SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END), 0), 2) AS `Overturn Rate` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Plan Sponsor Name` ORDER BY `Total Appeals` DESC, `Overturn Rate` DESC LIMIT 10",
+    "intent": "Return the top plan sponsors by appeal volume and overturn rate, showing total appeals, closed cases, overturned cases, and overturn rate percentage.",
+    "referenced_columns": [
+     "Plan Sponsor Name",
+     "Case Status",
+     "Determination",
+     "Case Identifier"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Plan Sponsor Name"
+    ],
+    "measures": [
+     {
+      "column": "Total Appeals",
+      "type": "count",
+      "numerator": "Total Appeals",
+      "denominator": "Total Appeals"
+     },
+     {
+      "column": "Overturn Rate",
+      "type": "percentage",
+      "numerator": "Overturned Cases",
+      "denominator": "Closed Cases"
+     }
+    ],
+    "expected_row_scale": "one row per plan sponsor",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "cb53dd040d84a638f9bae6bf08df7b9bd5a0afc8139ccfb96d9f7a93fafe6ba7": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T13:09:31+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "which sponsor has the best tat",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Plan Sponsor Name"
+      ],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {
+       "Received Date": {
+        "from": "2024-01-01",
+        "to": "2026-07-13"
+       }
+      },
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "a10e1ea382f8c552ab57fbea1ce4d862ef4722108657ff732b4d7b65c61f56a0": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-08T13:09:48+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Plan Sponsor Name`, AVG(CASE WHEN `Case Status` = 'CLOSED' THEN datediff(`Closed Date (CaseHistory)`, `Received Date`) END) AS `Avg Turnaround Days`, COUNT(CASE WHEN `Case Status` = 'CLOSED' THEN 1 END) AS `Closed Cases` FROM `my_catalog`.`default`.`appeals_final` WHERE `Received Date` >= '2024-01-01' AND `Received Date` <= '2026-07-13' GROUP BY `Plan Sponsor Name` ORDER BY `Avg Turnaround Days` ASC, `Plan Sponsor Name` ASC LIMIT 10",
+    "intent": "Returns the top 10 plan sponsors ranked by lowest average turnaround time for closed appeals within the specified date range",
+    "referenced_columns": [
+     "Plan Sponsor Name",
+     "Case Status",
+     "Closed Date (CaseHistory)",
+     "Received Date"
+    ],
+    "filters_applied": {
+     "Received Date": {
+      "from": "2024-01-01",
+      "to": "2026-07-13"
+     }
+    },
+    "grain": "none",
+    "dimensions": [
+     "Plan Sponsor Name"
+    ],
+    "measures": [
+     {
+      "column": "Avg Turnaround Days",
+      "type": "average",
+      "numerator": "Turnaround Days",
+      "denominator": "Closed Cases"
+     }
+    ],
+    "expected_row_scale": "top 10 sponsors",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "a55d4d3d8886dcef24eba8a319d7374488120bf8e39b03e49c6e6b750c049253": {
+   "purpose": "insight_narrative",
+   "created_at": "2026-11-08T13:09:54+00:00",
+   "value": {
+    "key_finding": "COSTCO WHOLESALE CORPORATION has the lowest Avg Turnaround Days at 13.93 days, 0.17 days faster than the median sponsor of 14.10 days, and accounts for 10.5% of all closed cases.",
+    "detailed_analysis": [
+     "Across the 10 sponsors, Avg Turnaround Days span a narrow 0.31‑day range from 13.93 to 14.23 days, indicating a tightly clustered performance set. [F8]",
+     "The runner‑up, SALESFORCE.COM,INC., sits just 0.07 days behind COSTCO WHOLESALE CORPORATION, underscoring the fine‑margin differences that separate the top performers. [F13]",
+     "Half of the sponsors (5 out of 10) outperform the median of 14.10 days, while the simple average of 14.09 days is almost identical to the volume‑weighted average of 14.09 days, showing volume does not skew the ranking. [F14][F4][F22]",
+     "The coefficient of variation is a modest 0.7%, and all sponsors fall within the inter‑quartile fences of 13.82 to 14.36 days, confirming the absence of extreme outliers. [F15][F16][F17]",
+     "Spearman correlation of –0.14 between closed cases and Avg Turnaround Days suggests no clear relationship between case volume and turnaround speed. [F23]"
+    ],
+    "business_impact": [
+     "The 318 excess case‑days attributable to sponsors slower than the median translate into a measurable delay in overall case resolution. [F25]",
+     "STARBUCKS CORPORATION alone contributes 116 of those excess case‑days, highlighting a specific area for improvement. [F26]",
+     "All sponsors remain well below the 30‑day SLA, with the slowest sponsor still having 15.77 days of headroom, indicating that SLA compliance is not currently at risk. [F27][F28][F29]"
+    ],
+    "recommended_actions": [
+     {
+      "priority": "Immediate",
+      "action": "Implement a targeted process review for STARBUCKS CORPORATION to reduce Avg Turnaround Days by at least 0.10 days, aiming to cut its excess case-days by 50%.",
+      "owner": "Operations Lead",
+      "timeframe": "3 months",
+      "success_measure": "Reduce Avg Turnaround Days to 14.13 days and excess case-days to 58.",
+      "evidence_ids": [
+       "F26",
+       "F25"
+      ]
+     },
+     {
+      "priority": "Short-term",
+      "action": "Benchmark COSTCO WHOLESALE CORPORATION’s best‑practice workflow against other sponsors to identify transferable efficiencies.",
+      "owner": "Compliance Analyst",
+      "timeframe": "6 weeks",
+      "success_measure": "Document at least 3 actionable process changes.",
+      "evidence_ids": [
+       "F2",
+       "F6"
+      ]
+     },
+     {
+      "priority": "Monitor",
+      "action": "Track the trend of Avg Turnaround Days quarterly to ensure the 0.31‑day spread does not widen beyond 0.5 days.",
+      "owner": "Data Analytics Team",
+      "timeframe": "Quarterly",
+      "success_measure": "Maintain spread ≤0.5 days.",
+      "evidence_ids": [
+       "F8"
+      ]
+     },
+     {
+      "priority": "Strategic",
+      "action": "Re‑evaluate the volume weighting methodology to confirm that the current 14.09 days weighted average remains representative as case volumes shift.",
+      "owner": "Finance Department",
+      "timeframe": "12 months",
+      "success_measure": "No change in weighted average beyond ±0.01 days.",
+      "evidence_ids": [
+       "F22",
+       "F18"
+      ]
+     }
+    ]
+   }
+  },
+  "9c51e950dca63b87b4ef3c3d9cc13e2f7f20e3117cea577c88b396f832e23801": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T13:11:04+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "which unit has the best tat",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Current Unit Name"
+      ],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {},
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "8151057d3661e0100fe07dbd58e1fc728f8f9a6e9984bafaa667fd381b38f560": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-08T13:11:21+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Current Unit Name` AS `Current Unit Name`, AVG(CASE WHEN `Case Status` = 'CLOSED' THEN datediff(`Closed Date (CaseHistory)`, `Received Date`) END) AS `Avg Turnaround Days`, SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END) AS `Closed Cases` FROM `my_catalog`.`default`.`appeals_final` WHERE `Received Date` >= '2024-01-01' AND `Received Date` <= '2026-07-13' GROUP BY `Current Unit Name` ORDER BY `Avg Turnaround Days` ASC, `Current Unit Name` ASC",
+    "intent": "Returns the average turnaround time per unit for closed appeals within the available date range, sorted from fastest to slowest.",
+    "referenced_columns": [
+     "Case Status",
+     "Closed Date (CaseHistory)",
+     "Received Date",
+     "Current Unit Name"
+    ],
+    "filters_applied": {
+     "Received Date": {
+      "from": "2024-01-01",
+      "to": "2026-07-13"
+     }
+    },
+    "grain": "none",
+    "dimensions": [
+     "Current Unit Name"
+    ],
+    "measures": [
+     {
+      "column": "Avg Turnaround Days",
+      "type": "average",
+      "numerator": "Turnaround Days",
+      "denominator": "Closed Cases"
+     }
+    ],
+    "expected_row_scale": "one row per unit",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "6e80a05357b0dbfcaf037096c4bb15b08ffb7834e206ac6cbc05ec8e8f8555ad": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T13:13:16+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "which provider has the best tat",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Provider_Name"
+      ],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {},
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "525dd2c32a59847644fcf6cddfb528501b8752a54c23b609cfe0ee631e7fba12": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-08T13:13:35+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "WITH provider_avg AS (SELECT `Provider_Name`, ROUND(AVG(CASE WHEN `Case Status` = 'CLOSED' THEN datediff(`Closed Date (CaseHistory)`, `Received Date`) END), 2) AS `Avg Turnaround Days` FROM `my_catalog`.`default`.`appeals_final` WHERE `Case Status` = 'CLOSED' AND `Received Date` >= '2024-01-01' AND `Received Date` <= '2026-07-13' GROUP BY `Provider_Name`) SELECT `Provider_Name`, `Avg Turnaround Days`, ROW_NUMBER() OVER (ORDER BY `Avg Turnaround Days` ASC, `Provider_Name` ASC) AS `Rank` FROM provider_avg ORDER BY `Avg Turnaround Days` ASC, `Provider_Name` ASC LIMIT 10",
+    "intent": "Returns the top 10 providers ranked by lowest average turnaround days for closed appeals.",
+    "referenced_columns": [
+     "Provider_Name",
+     "Case Status",
+     "Closed Date (CaseHistory)",
+     "Received Date"
+    ],
+    "filters_applied": {
+     "Received Date": {
+      "from": "2024-01-01",
+      "to": "2026-07-13"
+     }
+    },
+    "grain": "none",
+    "dimensions": [
+     "Provider_Name"
+    ],
+    "measures": [
+     {
+      "column": "Avg Turnaround Days",
+      "type": "numeric",
+      "numerator": "Avg Turnaround Days",
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "top 10 providers",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "ffd17787540c3b1cecd3fbc1cbc8be9095c663dc1c852e389af7215c7daa2c1a": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T13:15:28+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "which provider has the best tat",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Provider_Name"
+      ],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {},
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "a9e23a744d840e0dfb315fbf08a9f5c778c07645a84792a9551fc24fb5b4041f": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T13:16:31+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "which providers has the best tat performance",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Provider_Name"
+      ],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {},
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "228e8059675faec9b14c999124f910b12e9e3bac3b79f5ce89984d07201fe5b6": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T13:20:56+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Give me an executive summary of the entire healthcare appeals dataset with key KPIs.",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "overview",
+      "grain": "none",
+      "dimensions": [],
+      "metrics": [
+       "total_appeals",
+       "open_appeals",
+       "closed_appeals",
+       "overdue_appeals",
+       "compliance_rate",
+       "overturn_rate",
+       "avg_turnaround_days"
+      ],
+      "filters": {},
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "b3c40f40d373059a5e71f08a91423a19b29f45aaa9fca5fec1ce59f154f5ba79": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-08T13:21:01+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT COUNT(`Case Identifier`) AS `Total Appeals`, SUM(CASE WHEN `Case Status` = 'OPEN' THEN 1 ELSE 0 END) AS `Open Appeals`, SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END) AS `Closed Appeals`, SUM(CASE WHEN `Case Status` = 'OPEN' AND `Received Date` <= date_sub(current_date(), 30) THEN 1 ELSE 0 END) AS `Overdue Appeals`, 100.0 * SUM(CASE WHEN `Case Status` = 'CLOSED' AND upper(`Closed In Compliance Indicator`) = 'Y' THEN 1 ELSE 0 END) / NULLIF(SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END), 0) AS `Compliance Rate`, 100.0 * SUM(CASE WHEN `Case Status` = 'CLOSED' AND `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) / NULLIF(SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END), 0) AS `Overturn Rate`, AVG(CASE WHEN `Case Status` = 'CLOSED' THEN datediff(`Closed Date (CaseHistory)`, `Received Date`) END) AS `Avg Turnaround Days` FROM `my_catalog`.`default`.`appeals_final`",
+    "intent": "Return aggregate KPIs for the entire appeals dataset",
+    "referenced_columns": [
+     "Case Status",
+     "Closed In Compliance Indicator",
+     "Determination",
+     "Closed Date (CaseHistory)",
+     "Received Date",
+     "Case Identifier"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [],
+    "measures": [
+     {
+      "column": "Total Appeals",
+      "type": "count",
+      "numerator": "Appeals",
+      "denominator": "All Cases"
+     },
+     {
+      "column": "Open Appeals",
+      "type": "count",
+      "numerator": "Open Appeals",
+      "denominator": "All Cases"
+     },
+     {
+      "column": "Closed Appeals",
+      "type": "count",
+      "numerator": "Closed Appeals",
+      "denominator": "All Cases"
+     },
+     {
+      "column": "Overdue Appeals",
+      "type": "count",
+      "numerator": "Overdue Appeals",
+      "denominator": "All Cases"
+     },
+     {
+      "column": "Compliance Rate",
+      "type": "percentage",
+      "numerator": "Compliant Closures",
+      "denominator": "Closed Cases"
+     },
+     {
+      "column": "Overturn Rate",
+      "type": "percentage",
+      "numerator": "Overturned Cases",
+      "denominator": "Closed Cases"
+     },
+     {
+      "column": "Avg Turnaround Days",
+      "type": "average",
+      "numerator": "Turnaround Days",
+      "denominator": "Closed Cases"
+     }
+    ],
+    "expected_row_scale": "one row",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "fe6c79af36b56802df74ff19167a7b61392fae90f39c102ca1aa6895f31a178d": {
+   "purpose": "insight_narrative",
+   "created_at": "2026-11-08T13:21:22+00:00",
+   "value": {
+    "key_finding": "Total Appeals is 10,002, with 2,001 open appeals representing 20.0% of the total, indicating a significant backlog. [F1, F2, F6]",
+    "detailed_analysis": [
+     "Closed Appeals account for 8,001, which is 80.0% of the total, while Open Appeals are 2,001, 20.0%. [F3, F2, F7, F6]",
+     "Overdue Appeals equal the number of Open Appeals, 2,001, also 20.0% of the total, highlighting that all open cases are overdue. [F4, F2, F8]",
+     "The average turnaround time of 14.09 days reflects the time taken to resolve appeals, with no evidence of extreme outliers. [F5]",
+     "The distribution shows a clear split between resolved and pending cases, with no intermediate categories reported. [F1, F2, F3]"
+    ],
+    "business_impact": [
+     "The 2,001 overdue appeals expose the organization to potential SLA breaches and increased member dissatisfaction. [F4, F2]",
+     "An average turnaround of 14.09 days may delay member access to benefits, impacting overall experience. [F5]"
+    ],
+    "recommended_actions": [
+     {
+      "priority": "Immediate",
+      "action": "Implement a triage workflow to prioritize overdue appeals",
+      "owner": "Compliance Operations Lead",
+      "timeframe": "1 month",
+      "success_measure": "Reduce overdue appeals to 1,800 (10% reduction) from 2,001",
+      "evidence_ids": [
+       "F4",
+       "F2"
+      ]
+     },
+     {
+      "priority": "Short-term",
+      "action": "Allocate additional staffing to the appeals team to handle the 2,001 open cases",
+      "owner": "Workforce Planning",
+      "timeframe": "2 months",
+      "success_measure": "Increase closed appeals to 8,500 within 2 months",
+      "evidence_ids": [
+       "F3",
+       "F2"
+      ]
+     },
+     {
+      "priority": "Strategic",
+      "action": "Introduce automated decision support to reduce average turnaround time to 12 days",
+      "owner": "Technology & Analytics",
+      "timeframe": "6 months",
+      "success_measure": "Avg turnaround days drop to 12.00 days from 14.09",
+      "evidence_ids": [
+       "F5"
+      ]
+     }
+    ]
+   }
+  },
+  "c26efe84bf643e1de151f2f2087c264fa7d8f786b3ffef4734165d9c4f5f58aa": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T13:22:25+00:00",
+   "value": {
+    "overall_status": "PARTIAL",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Compare quarterly overturned rates and identify the worst-performing quarter.",
+      "resolved_text": "",
+      "answerable": false,
+      "status": "MISSING_FIELD",
+      "reason": "Quarter is not a column in the data contract; cannot group by quarter.",
+      "analysis_type": "comparison",
+      "grain": "quarter",
+      "dimensions": [],
+      "metrics": [
+       "overturn_rate"
+      ],
+      "filters": {},
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "2961a62dd4af6d25c11468fd567218dfb0ebc9649a2df4065bb7a2a632731aeb": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T13:24:54+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 2,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Why is the overturn rate increasing?",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "trend",
+      "grain": "month",
+      "dimensions": [],
+      "metrics": [
+       "overturn_rate"
+      ],
+      "filters": {
+       "Received Date": {
+        "from": "2024-01-01",
+        "to": "2026-11-08"
+       }
+      },
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "line"
+     },
+     {
+      "id": "q2",
+      "question_text": "Why is the overturn rate increasing?",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "breakdown",
+      "grain": "none",
+      "dimensions": [
+       "Current Unit Name"
+      ],
+      "metrics": [
+       "overturn_rate"
+      ],
+      "filters": {
+       "Received Date": {
+        "from": "2024-01-01",
+        "to": "2026-11-08"
+       }
+      },
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "829414e08f60d064774240b81b705cf721299f69900bdeda235b52583b398b0a": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-08T13:25:19+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT date_format(`Received Date`,'yyyy-MM') AS `Month`, ROUND(100.0 * SUM(CASE WHEN `Case Status` = 'CLOSED' AND `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) / NULLIF(SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END),0),2) AS `Overturn Rate`, SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END) AS `Closed Cases` FROM `my_catalog`.`default`.`appeals_final` WHERE `Received Date` >= '2024-01-01' AND `Received Date` <= '2026-11-08' GROUP BY `Month` ORDER BY `Month` ASC",
+    "intent": "Returns the monthly overturn rate and closed case count for the period 2024-01-01 to 2026-11-08",
+    "referenced_columns": [
+     "Case Status",
+     "Determination"
+    ],
+    "filters_applied": {
+     "Received Date": {
+      "from": "2024-01-01",
+      "to": "2026-11-08"
+     }
+    },
+    "grain": "month",
+    "dimensions": [],
+    "measures": [
+     {
+      "column": "Overturn Rate",
+      "type": "percentage",
+      "numerator": "Overturned Cases",
+      "denominator": "Closed Cases"
+     }
+    ],
+    "expected_row_scale": "one row per month",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "7b9a5ca30e6795563b19587b6394b3d2c32a12e21d63110f0fc06f201ac7eedc": {
+   "purpose": "insight_narrative",
+   "created_at": "2026-11-08T13:25:37+00:00",
+   "value": {
+    "key_finding": "The overturn rate 55.63 has the highest number of closed cases at 293, 29 above the median 264, an 11.0% increase over the median [F11, F6, F7]. This rate accounts for 3.7% of all closed cases, contributing to 10.9% of the top three rates' share [F18, F19].",
+    "detailed_analysis": [
+     "Closed Cases span from 112 at rate 58.04 to 293 at 55.63, a spread of 181 [F8].",
+     "The coefficient of variation is 12.3%, indicating moderate dispersion across rates [F14].",
+     "Rate 55.63 sits only 2 cases above the next closest rate 49.83, highlighting sensitivity to small changes [F13, F12].",
+     "The lowest rate 58.04 falls outside the IQR fences (214 to 310), marking it as an outlier [F10, F15, F16].",
+     "Overall, 55.63’s position as the highest closed case rate is an outlier relative to the median, but the spread remains within moderate variation [F11, F6, F14]."
+    ],
+    "business_impact": [
+     "With 3.7% of total closed cases concentrated in rate 55.63, a surge here can strain capacity and affect SLA compliance [F18, F17].",
+     "The top three rates together represent 10.9% of all closed cases, indicating that a few rates drive a large portion of workload [F19, F17].",
+     "If the trend continues, the operational load could exceed current staffing levels, impacting member experience [F18, F19]."
+    ],
+    "recommended_actions": [
+     {
+      "priority": "Immediate",
+      "action": "Conduct a root cause analysis of case handling for rate 55.63 to identify bottlenecks",
+      "owner": "Process Improvement Lead",
+      "timeframe": "within 2 weeks",
+      "success_measure": "Reduce closed cases at 55.63 to ≤264, matching the median",
+      "evidence_ids": [
+       "F11",
+       "F6"
+      ]
+     },
+     {
+      "priority": "Short-term",
+      "action": "Allocate additional staffing or shift resources to rate 55.63 during peak periods to balance workload",
+      "owner": "Operations Manager",
+      "timeframe": "next 4 weeks",
+      "success_measure": "Decrease 55.63 share of total closed cases to <3.0%",
+      "evidence_ids": [
+       "F18"
+      ]
+     },
+     {
+      "priority": "Strategic",
+      "action": "Implement automated triage for high-volume rates to reduce closed case counts across top rates",
+      "owner": "Technology Lead",
+      "timeframe": "6 months",
+      "success_measure": "Lower HHI from 327 to <300, indicating reduced concentration",
+      "evidence_ids": [
+       "F20"
+      ]
+     },
+     {
+      "priority": "Monitor",
+      "action": "Track weekly closed case counts for rates 55.63, 49.83, and 58.04 to detect early deviations",
+      "owner": "Analytics Team",
+      "timeframe": "ongoing",
+      "success_measure": "Maintain margin between 55.63 and 49.83 within 5 cases",
+      "evidence_ids": [
+       "F13"
+      ]
+     }
+    ]
+   }
+  },
+  "b3e607777e90e6f9b39d6b1e27ec9aa67d3f6dbe81eb5f2b585bdab094a51aba": {
+   "purpose": "synthesis",
+   "created_at": "2026-11-08T13:26:10+00:00",
+   "value": {
+    "headline": "The overturn rate is increasing because it has the highest number of closed cases, 29 above the median, representing 3.7% of all closed cases.",
+    "answers": [
+     {
+      "id": "q1",
+      "question_text": "Why is the overturn rate increasing?",
+      "status": "ANSWERED",
+      "answer": "The overturn rate of 55.63 has the highest number of closed cases at 293, which is 29 above the median of 264, an 11.0% increase over the median, accounting for 3.7% of all closed cases.",
+      "why_not": ""
+     },
+     {
+      "id": "q2",
+      "question_text": "Why is the overturn rate increasing?",
+      "status": "NOT_ANSWERED",
+      "answer": "",
+      "why_not": "The AI service could not generate a query for this question. Please retry."
+     }
+    ],
+    "cross_cutting_note": ""
+   }
+  },
+  "e33f380d62575ebc77146ef92876c9586b5a3fd242c502713c5ac3b22eb8fb74": {
+   "purpose": "response_validation",
+   "created_at": "2026-11-08T13:26:12+00:00",
+   "value": {
+    "verdict": "FAIL",
+    "defects": [
+     {
+      "check": "completeness",
+      "severity": "blocking",
+      "sub_question_id": "q2",
+      "offending_text": "The AI service could not generate a query for this question. Please retry.",
+      "explanation": "No answer provided for sub-question q2."
+     },
+     {
+      "check": "unsupported_claim",
+      "severity": "advisory",
+      "sub_question_id": null,
+      "offending_text": "The overturn rate is increasing because it has the highest number of closed cases, 29 above the median, representing 3.7% of all closed cases.",
+      "explanation": "Claims causation without supporting evidence."
+     },
+     {
+      "check": "causal_language",
+      "severity": "advisory",
+      "sub_question_id": null,
+      "offending_text": "The overturn rate is increasing because it has the highest number of closed cases, 29 above the median, representing 3.7% of all closed cases.",
+      "explanation": "Uses \"because\" implying proven causation."
+     }
+    ],
+    "unanswered_ids": [
+     "q2"
+    ]
+   }
+  },
+  "2dbe47eb4efd77fce83f447d91744d96cd2842b80e02a1c2a527b515bdaf6e62": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T13:38:40+00:00",
+   "value": {
+    "overall_status": "PARTIAL",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which plan sponsors have the highest non-compliance rates?",
+      "resolved_text": "",
+      "answerable": false,
+      "status": "MISSING_FIELD",
+      "reason": "Metric 'non_compliance_rate' not defined in certified metric dictionary.",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Plan Sponsor Name"
+      ],
+      "metrics": [],
+      "filters": {},
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "5770bfda8add8fcbd16cd99ccb97544246c56790c4e1d7c8dae83dfb055f9100": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T13:40:11+00:00",
+   "value": {
+    "overall_status": "PARTIAL",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which specialties have the highest upheld rates?",
+      "resolved_text": "",
+      "answerable": false,
+      "status": "MISSING_FIELD",
+      "reason": "Metric 'upheld_rate' not defined in certified metric dictionary.",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Provider_Specialty"
+      ],
+      "metrics": [],
+      "filters": {},
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "43c624afaca062a02cf3e87a0ceec52ac3b13ff07eaaf60c6b38152c844e86d7": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T13:44:05+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which providers have the highest overturn rate?",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Provider_Name"
+      ],
+      "metrics": [
+       "overturn_rate"
+      ],
+      "filters": {},
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "457dd308b5b2ce4ab7a17525224ec76c04189dde75e88526996921c440e33b19": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-08T13:44:16+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Provider_Name`, SUM(CASE WHEN `Case Status` = 'CLOSED' AND `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) AS `Overturned Cases`, SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END) AS `Closed Cases`, ROUND(100.0 * SUM(CASE WHEN `Case Status` = 'CLOSED' AND `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) / NULLIF(SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END), 0), 2) AS `Overturn Rate` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Provider_Name` ORDER BY `Overturn Rate` DESC, `Provider_Name` ASC LIMIT 10",
+    "intent": "Returns the top providers ranked by their overturn rate, showing overturned cases, closed cases, and the percentage rate.",
+    "referenced_columns": [
+     "Provider_Name",
+     "Case Status",
+     "Determination"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Provider_Name"
+    ],
+    "measures": [
+     {
+      "column": "Overturn Rate",
+      "type": "percentage",
+      "numerator": "Overturned Cases",
+      "denominator": "Closed Cases"
+     }
+    ],
+    "expected_row_scale": "one row per provider",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "cbf7933d183ead97597a2abe463ce691730dd4261c863407860c7d3ef0af383c": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T13:52:27+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which plan sponsors have the lowest compliance rate?",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Plan Sponsor Name"
+      ],
+      "metrics": [
+       "compliance_rate"
+      ],
+      "filters": {},
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "d413300f43d193216861790e74c63e4f1857808fb32bdf346a8c3d0a65eadbca": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-08T13:52:32+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Plan Sponsor Name`, SUM(CASE WHEN `Case Status` = 'CLOSED' AND upper(`Closed In Compliance Indicator`) = 'Y' THEN 1 ELSE 0 END) AS `Compliant Closures`, SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END) AS `Closed Cases`, 100.0 * SUM(CASE WHEN `Case Status` = 'CLOSED' AND upper(`Closed In Compliance Indicator`) = 'Y' THEN 1 ELSE 0 END) / NULLIF(SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END), 0) AS `Compliance Rate` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Plan Sponsor Name` ORDER BY `Compliance Rate` ASC, `Plan Sponsor Name` ASC LIMIT 10",
+    "intent": "Return the plan sponsors with the lowest compliance rate, showing compliant closures, closed cases, and compliance rate",
+    "referenced_columns": [
+     "Plan Sponsor Name",
+     "Case Status",
+     "Closed In Compliance Indicator"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Plan Sponsor Name"
+    ],
+    "measures": [
+     {
+      "column": "Compliance Rate",
+      "type": "percentage",
+      "numerator": "Compliant Closures",
+      "denominator": "Closed Cases"
+     }
+    ],
+    "expected_row_scale": "one row per sponsor",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "d9bfafc8631dce74d36dfee790fc759d9e55b28cec77a5d2de5d443a835fc083": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T13:54:20+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Show me the top 10 providers by appeal count and their determination breakdown.",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Provider_ID",
+       "Determination"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": false,
+      "chart_hint": "none"
+     }
+    ]
+   }
+  },
+  "21eb8bf597a3f128c7c22425668587d124b50412bb057e5af811497faad8d2a8": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T13:55:24+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 2,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which sponsor has the highest number of appeals",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Plan Sponsor Name"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     },
+     {
+      "id": "q2",
+      "question_text": "how are those appeals being determined?",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "breakdown",
+      "grain": "none",
+      "dimensions": [
+       "Determination"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": [
+       "q1"
+      ],
+      "dependency_note": "Depends on result of q1 to identify sponsor with highest appeals.",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "ad388c1af825bd28785d0a98aaf3b2c9192d3e7b5bb3e93bc8a2d807c428a57e": {
+   "purpose": "synthesis",
+   "created_at": "2026-11-08T13:56:02+00:00",
+   "value": {
+    "headline": "Unable to determine sponsor with highest number of appeals and how appeals are determined.",
+    "answers": [
+     {
+      "id": "q1",
+      "question_text": "Which sponsor has the highest number of appeals",
+      "status": "NOT_ANSWERED",
+      "answer": "Answer not available.",
+      "why_not": "The AI service could not generate a query for this question. Please retry."
+     },
+     {
+      "id": "q2",
+      "question_text": "how are those appeals being determined?",
+      "status": "NOT_ANSWERED",
+      "answer": "Answer not available.",
+      "why_not": "This question builds on “Which sponsor has the highest number of appeals”, which could not be answered, so it was not attempted."
+     }
+    ],
+    "cross_cutting_note": ""
+   }
+  },
+  "0ebb13e0caf315f759bbf2377263d99946a1345ca6e8385ec9f0abf4944663b9": {
+   "purpose": "response_validation",
+   "created_at": "2026-11-08T13:56:10+00:00",
+   "value": {
+    "verdict": "PASS",
+    "defects": [],
+    "unanswered_ids": []
+   }
+  },
+  "2e25e3a3cc4fb1d4922b560542cc6788dcda9eca82980e595d3ec3399367b283": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T13:56:59+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which providers have the highest appeal volume?",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Provider_Name"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "8fdbef1db43e44eacaf0ec77e2c69808f10d349c2a726fa1589bb48b285fbcc7": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-08T13:57:28+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Provider_Name`, COUNT(`Case Identifier`) AS `Total Appeals` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Provider_Name` ORDER BY `Total Appeals` DESC, `Provider_Name` ASC LIMIT 10",
+    "intent": "Returns the top 10 providers by total appeal volume.",
+    "referenced_columns": [
+     "Provider_Name",
+     "Case Identifier"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Provider_Name"
+    ],
+    "measures": [
+     {
+      "column": "Total Appeals",
+      "type": "count",
+      "numerator": "Appeals",
+      "denominator": "All Cases"
+     }
+    ],
+    "expected_row_scale": "top 10 providers",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "3cf8ab91218ff897a6692799fb296ad7c73134cd21b70aaefb08de4ab09f578f": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T13:58:22+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which provider has the highest appeal volume and what is its overturn rate?",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Provider_Name"
+      ],
+      "metrics": [
+       "total_appeals",
+       "overturn_rate"
+      ],
+      "filters": {},
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "44565fff4448c821bbc5bc6a0e0471f101e8fb40abeb29f2b318d7264594aa8c": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-08T13:58:55+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Provider_Name` AS `Provider Name`, COUNT(`Case Identifier`) AS `Total Appeals`, SUM(CASE WHEN `Case Status` = 'CLOSED' AND `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) AS `Overturned Cases`, SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END) AS `Closed Cases`, ROUND(100.0 * SUM(CASE WHEN `Case Status` = 'CLOSED' AND `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) / NULLIF(SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END), 0), 2) AS `Overturn Rate` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Provider_Name` ORDER BY `Total Appeals` DESC, `Provider Name` ASC LIMIT 1",
+    "intent": "Returns the provider with the highest appeal volume and its overturn rate.",
+    "referenced_columns": [
+     "Provider_Name",
+     "Case Identifier",
+     "Case Status",
+     "Determination"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Provider Name"
+    ],
+    "measures": [
+     {
+      "column": "Overturn Rate",
+      "type": "percentage",
+      "numerator": "Overturned Cases",
+      "denominator": "Closed Cases"
+     }
+    ],
+    "expected_row_scale": "one row",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "0326139108ecaf8c83edf8c819d66d7c6cdb111369924563dfe448db6a9ec21b": {
+   "purpose": "insight_narrative",
+   "created_at": "2026-11-08T13:59:16+00:00",
+   "value": {
+    "key_finding": "The provider has 1,028 total appeals and an overturn rate of 38.3% [F1, F4]",
+    "detailed_analysis": [
+     "The dataset records 1,028 total appeals, 394 overturned cases, and 800 closed cases [F1, F2, F3]",
+     "Overturned cases account for 38.3% of total appeals, while closed cases account for 77.8% [F4, F5]",
+     "The sum of overturned and closed cases (1,194) exceeds the total appeals count, suggesting overlapping categories or data entry issues [F1, F2, F3]",
+     "The high overturn share relative to closed cases indicates a substantial proportion of appeals are reversed, which may reflect review intensity or policy changes [F4, F5]"
+    ],
+    "business_impact": [
+     "A 38.3% overturn rate means 394 cases require additional review, potentially increasing compliance workload [F2, F4]",
+     "The volume of overturned cases could strain SLA compliance and affect member experience if not managed efficiently [F2]"
+    ],
+    "recommended_actions": [
+     {
+      "priority": "Short-term",
+      "action": "Audit case classification to resolve overlap between overturned and closed cases [F1, F2, F3]",
+      "owner": "Compliance Lead",
+      "timeframe": "Within 30 days",
+      "success_measure": "Reduce overlap to less than 5% of total appeals [F1, F2, F3]",
+      "evidence_ids": [
+       "F1",
+       "F2",
+       "F3"
+      ]
+     },
+     {
+      "priority": "Short-term",
+      "action": "Implement a data validation rule to prevent duplicate case status entries [F1, F2, F3]",
+      "owner": "Data Quality Manager",
+      "timeframe": "Within 30 days",
+      "success_measure": "Zero duplicate status entries in appeal records [F1, F2, F3]",
+      "evidence_ids": [
+       "F1",
+       "F2",
+       "F3"
+      ]
+     },
+     {
+      "priority": "Strategic",
+      "action": "Review policy and training for appeal adjudication to reduce overturn rate [F4]",
+      "owner": "Policy Review Team",
+      "timeframe": "Within 90 days",
+      "success_measure": "Overturn rate below 30% of total appeals [F4]",
+      "evidence_ids": [
+       "F4"
+      ]
+     }
+    ]
+   }
+  },
+  "cb2d164b8d6e5dfd8afc8a371a9f5b65c9f674ea02cc5f0e836b31f37a2384ed": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T14:00:02+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 2,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which sponsor has the highest number of appeals",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Plan Sponsor Name"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     },
+     {
+      "id": "q2",
+      "question_text": "how are those appeals being determined?",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "breakdown",
+      "grain": "none",
+      "dimensions": [
+       "Determination"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": [
+       "q1"
+      ],
+      "dependency_note": "Uses sponsor identified in question 1",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "d10ca9fbb9ffe007201540dced6ceaaf2ebdcb1b007168a803e2771005bd22a9": {
+   "purpose": "response_validation",
+   "created_at": "2026-11-08T14:00:34+00:00",
+   "value": {
+    "verdict": "FAIL",
+    "defects": [
+     {
+      "check": "completeness",
+      "severity": "blocking",
+      "sub_question_id": "q1",
+      "offending_text": "The AI service could not generate a query for this question. Please retry.",
+      "explanation": "No answer provided for sub-question q1."
+     },
+     {
+      "check": "completeness",
+      "severity": "blocking",
+      "sub_question_id": "q2",
+      "offending_text": "This question builds on “Which sponsor has the highest number of appeals”, which could not be answered, so it was not attempted.",
+      "explanation": "No answer provided for sub-question q2."
+     }
+    ],
+    "unanswered_ids": [
+     "q1",
+     "q2"
+    ]
+   }
+  },
+  "46813127872a895811b7b1162fb553aabb2aa5107e8886d21cbaff887caa3f00": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T14:02:08+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 2,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which sponsor has the highest number of appeals",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Plan Sponsor Name"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     },
+     {
+      "id": "q2",
+      "question_text": "how are those appeals being determined?",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "breakdown",
+      "grain": "none",
+      "dimensions": [
+       "Determination"
+      ],
+      "metrics": [
+       "total_appeals"
+      ],
+      "filters": {},
+      "depends_on": [
+       "q1"
+      ],
+      "dependency_note": "Uses the sponsor identified in q1",
+      "expects_chart": true,
+      "chart_hint": "pie"
+     }
+    ]
+   }
+  },
+  "7b2286306021afbd8829d9d99d21f8b6a1de013b0485efd8fd3420dc262e199b": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-08T14:02:25+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Plan Sponsor Name`, COUNT(`Case Identifier`) AS `Total Appeals` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Plan Sponsor Name` ORDER BY `Total Appeals` DESC, `Plan Sponsor Name` ASC LIMIT 1",
+    "intent": "Returns the sponsor with the highest number of appeals and the appeal count",
+    "referenced_columns": [
+     "Plan Sponsor Name",
+     "Case Identifier"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Plan Sponsor Name"
+    ],
+    "measures": [
+     {
+      "column": "Total Appeals",
+      "type": "count",
+      "numerator": "Appeals",
+      "denominator": "Appeals"
+     }
+    ],
+    "expected_row_scale": "one row",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "78546f7c89733ff84e04447a63427069cd490de3c0810fd5da4ac3a8d270dff9": {
+   "purpose": "synthesis",
+   "created_at": "2026-11-08T14:03:00+00:00",
+   "value": {
+    "headline": "Total appeals are 1,066, but sponsor-level data and determination method are unavailable.",
+    "answers": [
+     {
+      "id": "q1",
+      "question_text": "Which sponsor has the highest number of appeals",
+      "status": "ANSWERED",
+      "answer": "Sponsor-level data is not available, so the sponsor with the highest number of appeals cannot be identified.",
+      "why_not": ""
+     },
+     {
+      "id": "q2",
+      "question_text": "how are those appeals being determined?",
+      "status": "NOT_ANSWERED",
+      "answer": "Unable to determine how appeals are being determined.",
+      "why_not": "The AI service could not generate a query for this question. Please retry."
+     }
+    ],
+    "cross_cutting_note": ""
+   }
+  },
+  "25e2b96ac78d3fd97e2f4cb6de18b802c207800d394b71a1d9d621b20ebfbd1b": {
+   "purpose": "response_validation",
+   "created_at": "2026-11-08T14:03:02+00:00",
+   "value": {
+    "verdict": "FAIL",
+    "defects": [
+     {
+      "check": "unsupported_claim",
+      "severity": "blocking",
+      "sub_question_id": "q2",
+      "offending_text": "but sponsor-level data and determination method are unavailable.",
+      "explanation": "The evidence does not state that the determination method is unavailable."
+     }
+    ],
+    "unanswered_ids": []
+   }
+  },
+  "baebcebe76e611dcc7773d0fffbfddf314266889ed525d8ca634c26a15897000": {
+   "purpose": "planner",
+   "created_at": "2026-11-08T14:03:51+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "What is the trend in overturn rates over the last 12 months?",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "trend",
+      "grain": "month",
+      "dimensions": [],
+      "metrics": [
+       "overturn_rate"
+      ],
+      "filters": {
+       "Closed Date (CaseHistory)": {
+        "from": "2025-11-08",
+        "to": "2026-11-08"
+       }
+      },
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "line"
+     }
+    ]
+   }
+  },
+  "2b7a92c80e38b6a5fcfef67dee75ee027899b523111f1057c630c3ceac6802a5": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-08T14:04:09+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT date_format(`Closed Date (CaseHistory)`, 'yyyy-MM') as `Month`, SUM(CASE WHEN `Case Status` = 'CLOSED' AND `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) as `Overturned Cases`, SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END) as `Closed Cases`, ROUND(100.0 * SUM(CASE WHEN `Case Status` = 'CLOSED' AND `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) / NULLIF(SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END),0),2) as `Overturn Rate` FROM `my_catalog`.`default`.`appeals_final` WHERE `Closed Date (CaseHistory)` >= '2025-11-08' AND `Closed Date (CaseHistory)` <= '2026-11-08' GROUP BY `Month` ORDER BY `Month` ASC",
+    "intent": "Returns the monthly trend of overturn rates for closed cases between 2025-11-08 and 2026-11-08",
+    "referenced_columns": [
+     "Case Status",
+     "Determination",
+     "Closed Date (CaseHistory)"
+    ],
+    "filters_applied": {
+     "Closed Date (CaseHistory)": {
+      "from": "2025-11-08",
+      "to": "2026-11-08"
+     }
+    },
+    "grain": "month",
+    "dimensions": [],
+    "measures": [
+     {
+      "column": "Overturn Rate",
+      "type": "percentage",
+      "numerator": "Overturned Cases",
+      "denominator": "Closed Cases"
+     }
+    ],
+    "expected_row_scale": "one row per month",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "fbe1f8af7c834599798238e97930dbec1b683aeee9d43e967e79eefc79c4fdfb": {
+   "purpose": "insight_narrative",
+   "created_at": "2026-11-08T14:04:23+00:00",
+   "value": {
+    "key_finding": "49.25 has the lowest Overturned Cases at 98, 28 lower than the median 126 (22.2%) [F1, F6, F7]. This indicates a downward trend relative to the median across the 9 rates [F1, F4].",
+    "detailed_analysis": [
+     "Across 9 rates, Overturned Cases ranges from 98 (49.25) to 150 (50.85), a spread of 52 [F2, F3, F8]. The next-closest rate, 45.42, is at 119; the clear gap of 21 to 49.25 shows how secure this position is [F12, F13]. Four of 9 rates perform better than the median of 126, while the simple average is 125.2 [F14, F5]. Variation across rates is moderate with a coefficient of variation of 10.1% [F15]. The IQR fences span 119.5 to 131.5, placing 49.25, 50.85, and 50.00 outside the typical range [F16, F17]."
+    ],
+    "business_impact": [
+     "Higher overturned cases at 50.85 (150) increase workload and may strain capacity, as it accounts for 13.3% of total overturned cases [F3, F25]. The rate 49.25 handled 199 closed cases, 8.8% of the total, indicating lower SLA exposure compared to higher rates [F19, F20]. Overall, 1,127 overturned cases out of 2,249 closed cases suggest a 50.2% overturn rate, impacting member experience [F18, F24]."
+    ],
+    "recommended_actions": [
+     {
+      "priority": "Immediate",
+      "action": "Review rate 50.85 to reduce overturned cases to 126 or below",
+      "owner": "Compliance Team",
+      "timeframe": "Next 30 days",
+      "success_measure": "Overturned Cases <= 126",
+      "evidence_ids": [
+       "F3",
+       "F4"
+      ]
+     },
+     {
+      "priority": "Short-term",
+      "action": "Implement targeted training for rates with Overturned Cases above 131.5",
+      "owner": "Operations Manager",
+      "timeframe": "Next 60 days",
+      "success_measure": "Overturned Cases <= 131.5",
+      "evidence_ids": [
+       "F17"
+      ]
+     },
+     {
+      "priority": "Strategic",
+      "action": "Automate review process for rates with closed cases > 200",
+      "owner": "Process Improvement Lead",
+      "timeframe": "Next 90 days",
+      "success_measure": "Closed Cases <= 200",
+      "evidence_ids": [
+       "F19",
+       "F21"
+      ]
+     },
+     {
+      "priority": "Monitor",
+      "action": "Track coefficient of variation quarterly to ensure stability",
+      "owner": "Analytics Team",
+      "timeframe": "Quarterly",
+      "success_measure": "Coefficient of variation <= 10.1%",
+      "evidence_ids": [
+       "F15"
+      ]
+     }
+    ]
+   }
+  },
+  "a0cae9752729ef1a5ea85dbd2ae1b0e8f89871ee455a23b3039cd3b35dc6a3c2": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-12T10:03:26+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Plan Sponsor Name`, COUNT(`Case Identifier`) AS `Total Appeals`, ROUND(100.0 * SUM(CASE WHEN `Case Status` = 'CLOSED' AND `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) / NULLIF(SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END), 0), 2) AS `Overturn Rate`, SUM(CASE WHEN `Case Status` = 'CLOSED' AND `Determination` IN ('OVERTURNED','PARTIALLY OVERTURNED') THEN 1 ELSE 0 END) AS `Overturned Cases`, SUM(CASE WHEN `Case Status` = 'CLOSED' THEN 1 ELSE 0 END) AS `Closed Cases` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Plan Sponsor Name` ORDER BY `Total Appeals` DESC, `Overturn Rate` DESC, `Plan Sponsor Name` ASC LIMIT 10",
+    "intent": "Returns each plan sponsor's total appeal volume and overturn rate, ranked by volume and rate.",
+    "referenced_columns": [
+     "Plan Sponsor Name",
+     "Case Status",
+     "Determination",
+     "Case Identifier"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Plan Sponsor Name"
+    ],
+    "measures": [
+     {
+      "column": "Total Appeals",
+      "type": "count",
+      "numerator": null,
+      "denominator": null
+     },
+     {
+      "column": "Overturn Rate",
+      "type": "percentage",
+      "numerator": "Overturned Cases",
+      "denominator": "Closed Cases"
+     }
+    ],
+    "expected_row_scale": "one row per plan sponsor",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  },
+  "dadd5af724315ab0178e2bd5ef8c89d059051319f848f498e554334071978e60": {
+   "purpose": "insight_narrative",
+   "created_at": "2026-11-12T10:03:39+00:00",
+   "value": {
+    "key_finding": "COSTCO WHOLESALE CORPORATION · 47.92 has the highest Total Appeals at 1,066, 62 (6.2%) above the median, and its 404 overturned cases represent 10.1% of all overturned cases [F2, F6, F7, F18, F19]",
+    "detailed_analysis": [
+     "The spread of Total Appeals across the 10 combinations is 110, with the highest 1,066 and the lowest 956, a ratio of 1.12× [F8, F9]",
+     "The runner‑up, STARBUCKS CORPORATION · 50.60, is 46 fewer appeals than Costco, underscoring Costco’s distinct position [F12, F13]",
+     "Variation is low, with a coefficient of variation of 3.0% and the IQR fences spanning 946 to 1,050, placing Costco outside the typical range [F14, F15, F16]",
+     "Across combinations, the Spearman correlation between overturned cases and Total Appeals is 0.53, indicating a moderate association [F21]"
+    ],
+    "business_impact": [
+     "With 1,066 appeals, Costco accounts for 10.7% of the 10,002 total appeals, contributing 31.0% of the top three combinations and driving overall workload [F2, F23, F24]",
+     "Its 404 overturned cases, 10.1% of the 4,008 total, highlight a significant quality exposure that could affect SLA compliance and member experience [F18, F19, F17]",
+     "The concentration index (HHI 1,001) shows low market concentration, but Costco’s outsized share suggests a potential bottleneck in capacity planning [F25]"
+    ],
+    "recommended_actions": [
+     {
+      "priority": "Immediate",
+      "action": "Conduct a focused appeal process audit for COSTCO WHOLESALE CORPORATION · 47.92 to identify root causes of high overturns",
+      "owner": "Compliance Lead",
+      "timeframe": "within 30 days",
+      "success_measure": "overturned cases share < 8% of total overturned cases",
+      "evidence_ids": [
+       "F19"
+      ]
+     },
+     {
+      "priority": "Short-term",
+      "action": "Allocate additional case review capacity to COSTCO WHOLESALE CORPORATION · 47.92 to handle its 1,066 appeals efficiently",
+      "owner": "Operations Manager",
+      "timeframe": "within 60 days",
+      "success_measure": "overturned cases count < 350",
+      "evidence_ids": [
+       "F2",
+       "F18"
+      ]
+     },
+     {
+      "priority": "Strategic",
+      "action": "Implement targeted training for Costco staff on appeal criteria and documentation standards",
+      "owner": "Training Lead",
+      "timeframe": "within 90 days",
+      "success_measure": "reduction in overturned cases share to < 8%",
+      "evidence_ids": [
+       "F18",
+       "F19"
+      ]
+     },
+     {
+      "priority": "Monitor",
+      "action": "Track the Herfindahl-Hirschman Index to ensure concentration remains below 1,200",
+      "owner": "Analytics Lead",
+      "timeframe": "quarterly review",
+      "success_measure": "HHI < 1,200",
+      "evidence_ids": [
+       "F25"
+      ]
+     }
+    ]
+   }
+  },
+  "0ada7befd005537f94e731797898b74a31ce35e1d6a968bd85b94924b0ece2a3": {
+   "purpose": "planner",
+   "created_at": "2026-11-12T11:36:01+00:00",
+   "value": {
+    "overall_status": "SUPPORTED",
+    "question_count": 1,
+    "sub_questions": [
+     {
+      "id": "q1",
+      "question_text": "Which operational unit has the best TAT performance?",
+      "resolved_text": "",
+      "answerable": true,
+      "status": "SUPPORTED",
+      "reason": "",
+      "analysis_type": "ranking",
+      "grain": "none",
+      "dimensions": [
+       "Current Unit Name"
+      ],
+      "metrics": [
+       "avg_turnaround_days"
+      ],
+      "filters": {},
+      "depends_on": [],
+      "dependency_note": "",
+      "expects_chart": true,
+      "chart_hint": "bar"
+     }
+    ]
+   }
+  },
+  "6ad898b0bd3d35e3fce3d1e61bcaf1fd4b958688130f3e0042949b0e1a164f6f": {
+   "purpose": "sql_generation",
+   "created_at": "2026-11-12T11:36:34+00:00",
+   "value": {
+    "answerable": true,
+    "status": "SUPPORTED",
+    "reason": "",
+    "sql": "SELECT `Current Unit Name`, AVG(CASE WHEN `Case Status` = 'CLOSED' THEN datediff(`Closed Date (CaseHistory)`, `Received Date`) END) AS `Average Turnaround Days` FROM `my_catalog`.`default`.`appeals_final` GROUP BY `Current Unit Name` ORDER BY `Average Turnaround Days` ASC, `Current Unit Name` ASC",
+    "intent": "Returns the average turnaround days per operational unit, sorted from best to worst.",
+    "referenced_columns": [
+     "Case Status",
+     "Closed Date (CaseHistory)",
+     "Received Date",
+     "Current Unit Name"
+    ],
+    "filters_applied": {},
+    "grain": "none",
+    "dimensions": [
+     "Current Unit Name"
+    ],
+    "measures": [
+     {
+      "column": "Average Turnaround Days",
+      "type": "number",
+      "numerator": "Average Turnaround Days",
+      "denominator": null
+     }
+    ],
+    "expected_row_scale": "one row per unit",
+    "is_aggregate": true,
+    "self_check": {
+     "columns_valid": true,
+     "denominators_valid": true,
+     "division_guarded": true,
+     "shape_matches_intent": true,
+     "order_deterministic": true
+    },
+    "repair_applied": ""
+   }
+  }
+ }
+}
